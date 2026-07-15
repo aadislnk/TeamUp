@@ -31,5 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+##intellij##
+.idea
 ##to avoid sensitive info##
 backend\src\main\resources\application-local.properties
