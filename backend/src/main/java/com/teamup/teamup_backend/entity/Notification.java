@@ -10,7 +10,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "notifications")
+@Table(
+        name = "notifications",
+        indexes = {
+                @Index(name = "idx_notification_user", columnList = "user_id")
+        }
+)
 public class Notification extends BaseEntity{
 
     @Column(nullable = false, length = 255)

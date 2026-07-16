@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
                         name = "uk_team_member",
                         columnNames = {"team_id", "user_id"}
                 )
+        },
+        indexes = {
+                @Index(name = "idx_team_member_team", columnList = "team_id"),
+                @Index(name = "idx_team_member_user", columnList = "user_id")
         }
 )
 public class TeamMember extends BaseEntity{

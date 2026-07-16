@@ -13,7 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "teams")
+@Table(
+        name = "teams",
+        indexes = {
+                @Index(name = "idx_team_event", columnList = "event_id"),
+                @Index(name = "idx_team_leader", columnList = "leader_id")
+        }
+)
 public class Team extends BaseEntity {
 
     @Column(nullable = false,length = 255)

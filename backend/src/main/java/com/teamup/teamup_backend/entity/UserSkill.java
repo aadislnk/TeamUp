@@ -14,10 +14,11 @@ import lombok.*;
 @Table(
         name = "user_skills",
         uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_user_skill",
-                        columnNames = {"user_id", "skill_id"}
-                )
+                @UniqueConstraint(name = "uk_user_skill",columnNames = {"user_id", "skill_id"} )
+        },
+        indexes = {
+                @Index(name = "idx_user_skill_user", columnList = "user_id"),
+                @Index(name = "idx_user_skill_skill", columnList = "skill_id")
         }
 )
 public class UserSkill extends BaseEntity{

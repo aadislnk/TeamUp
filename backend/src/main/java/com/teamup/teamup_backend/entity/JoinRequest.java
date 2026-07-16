@@ -17,6 +17,10 @@ import lombok.*;
                         name = "uk_join_request",
                         columnNames = {"user_id", "team_id"}
                 )
+        },
+        indexes = {
+                @Index(name = "idx_join_request_team", columnList = "team_id"),
+                @Index(name = "idx_join_request_user", columnList = "user_id")
         }
 )
 public class JoinRequest extends BaseEntity {

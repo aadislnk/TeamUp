@@ -11,7 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "email_verification_tokens")
+@Table(
+        name = "email_verification_tokens",
+        indexes = {
+                @Index(name = "idx_email_verification_user", columnList = "user_id")
+        }
+)
 public class EmailVerificationToken extends BaseEntity {
 
     @Column(nullable = false,length = 10)
