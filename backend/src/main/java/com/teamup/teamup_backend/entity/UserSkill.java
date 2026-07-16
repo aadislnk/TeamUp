@@ -10,7 +10,16 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user_skills")
+//@Table(name = "user_skills")
+@Table(
+        name = "user_skills",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_skill",
+                        columnNames = {"user_id", "skill_id"}
+                )
+        }
+)
 public class UserSkill extends BaseEntity{
 
     @Column(length = 20)

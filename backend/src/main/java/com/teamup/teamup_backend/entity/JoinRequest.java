@@ -10,7 +10,15 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "join_requests")
+@Table(
+        name = "join_requests",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_join_request",
+                        columnNames = {"user_id", "team_id"}
+                )
+        }
+)
 public class JoinRequest extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
