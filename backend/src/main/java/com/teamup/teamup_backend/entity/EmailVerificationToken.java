@@ -1,8 +1,6 @@
 package com.teamup.teamup_backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,4 +22,8 @@ public class EmailVerificationToken extends BaseEntity {
 
     @Column(name = "expiry_time",nullable = false)
     private LocalDateTime expiryTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

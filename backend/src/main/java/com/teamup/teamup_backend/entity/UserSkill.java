@@ -1,9 +1,7 @@
 package com.teamup.teamup_backend.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -17,4 +15,12 @@ public class UserSkill extends BaseEntity{
 
     @Column(length = 20)
     private String proficiency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "skill_id", nullable = false)
+    private Skill skill;
 }

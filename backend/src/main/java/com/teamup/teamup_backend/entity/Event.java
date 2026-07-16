@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,6 +42,10 @@ public class Event extends BaseEntity {
 
     @Column(name = "registration_deadline",nullable = false)
     private LocalDateTime registrationDeadline;
+
     @Column(name = "event_date",nullable = false)
     private LocalDateTime eventDate;
+
+    @OneToMany(mappedBy = "event",fetch = FetchType.LAZY)
+    private List<Team> teams;
 }

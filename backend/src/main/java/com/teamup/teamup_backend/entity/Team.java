@@ -5,6 +5,8 @@ import com.teamup.teamup_backend.enums.TeamStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,4 +34,18 @@ public class Team extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TeamStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id",nullable = false)
+    private Event event;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "leader_id",nullable = false)
+    private User leader;
+
+    @OneToMany(mappedBy = "team",fetch = FetchType.LAZY)
+    private List<TeamMember> members;
+
+    @OneToMany(mappedBy = "team",fetch =  FetchType.LAZY)
+    private List<JoinRequest>  joinRequests;
 }

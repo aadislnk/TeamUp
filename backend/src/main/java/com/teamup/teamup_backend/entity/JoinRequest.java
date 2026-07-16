@@ -19,4 +19,12 @@ public class JoinRequest extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private JoinRequestStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id",nullable = false)
+    private Team team;
 }

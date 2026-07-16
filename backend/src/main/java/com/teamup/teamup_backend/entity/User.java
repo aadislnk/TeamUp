@@ -6,6 +6,8 @@ import com.teamup.teamup_backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -53,5 +55,23 @@ public class User extends BaseEntity{
 
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified = false;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<EmailVerificationToken> emailVerificationTokens;
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "leader",fetch = FetchType.LAZY)
+    private List<Team> teams;
+
+    @OneToMany(mappedBy = "user",fetch =  FetchType.LAZY)
+    private List<UserSkill> skills;
+
+    @OneToMany(mappedBy = "user",fetch =  FetchType.LAZY)
+    private List<TeamMember> teamMembers;
+
+    @OneToMany(mappedBy = "user",fetch =  FetchType.LAZY)
+    private List<JoinRequest>  joinRequests;
 
 }

@@ -1,9 +1,9 @@
 package com.teamup.teamup_backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,4 +16,7 @@ public class Skill extends BaseEntity{
 
     @Column(nullable = false,unique = true,length = 100)
     String name;
+
+    @OneToMany(mappedBy = "skill",fetch = FetchType.LAZY)
+    private List<UserSkill> skills;
 }
