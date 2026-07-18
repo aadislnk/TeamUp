@@ -1,4 +1,7 @@
 package com.teamup.teamup_backend.util;
+public final class DateTimeUtil {
 
-public class DateTimeUtil {
+    private DateTimeUtil() {
+    }
+
 }

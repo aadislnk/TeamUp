@@ -1,4 +1,8 @@
 package com.teamup.teamup_backend.util;
 
-public class ResponseUtil {
+public final class ResponseUtil {
+
+    private ResponseUtil() {
+    }
+
 }
