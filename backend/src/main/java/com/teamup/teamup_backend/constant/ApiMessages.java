@@ -15,4 +15,8 @@ public final class ApiMessages {
     public static final String RESOURCE_NOT_FOUND = "Requested resource not found.";
     public static final String ACCESS_DENIED = "Access denied.";
     public static final String UNAUTHORIZED = "Authentication required.";
+
+    public static final String OTP_SENT_SUCCESS = "OTP sent successfully.";
+    public static final String OTP_VERIFIED_SUCCESS = "Email verified successfully.";
+    public static final String OTP_RESENT_SUCCESS = "OTP resent successfully.";
 }
