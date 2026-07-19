@@ -5,10 +5,7 @@ import com.teamup.teamup_backend.entity.EmailVerificationToken;
 import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.OtpPurpose;
 import com.teamup.teamup_backend.enums.TokenStatus;
-import com.teamup.teamup_backend.exception.InvalidOtpException;
-import com.teamup.teamup_backend.exception.OtpExpiredException;
-import com.teamup.teamup_backend.exception.OtpNotFoundException;
-import com.teamup.teamup_backend.exception.UserNotFoundException;
+import com.teamup.teamup_backend.exception.*;
 import com.teamup.teamup_backend.repository.EmailVerificationTokenRepository;
 import com.teamup.teamup_backend.repository.UserRepository;
 import com.teamup.teamup_backend.service.EmailService;
@@ -37,11 +34,20 @@ public class OtpServiceImpl implements OtpService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        EmailVerificationToken latestToken =
+                tokenRepository.findTopByUserAndPurposeOrderByCreatedAtDesc(
+                        user,
+                        OtpPurpose.EMAIL_VERIFICATION
+                ).orElse(null);
+
+        validateResendRules(latestToken);
+
         invalidatePreviousToken(user);
 
         String otp = otpGenerator.generateOtp();
 
-        EmailVerificationToken token = createVerificationToken(user, otp);
+        EmailVerificationToken token =
+                createVerificationToken(user, otp, latestToken);
 
         tokenRepository.save(token);
 
@@ -67,11 +73,23 @@ public class OtpServiceImpl implements OtpService {
                 )
                 .orElseThrow(() -> new OtpNotFoundException("OTP not found"));
 
-        if (isExpired(token)) {
+        if (!token.getOtp().equals(otp)) {
 
-            markExpired(token);
+            incrementFailedAttempts(token);
 
-            throw new OtpExpiredException("OTP has expired");
+            if (token.getFailedAttempts() >=
+                    otpProperties.getMaxVerificationAttempts()) {
+
+                token.setStatus(TokenStatus.REVOKED);
+
+                tokenRepository.save(token);
+
+                throw new TooManyVerificationAttemptsException(
+                        "Maximum verification attempts exceeded."
+                );
+            }
+
+            throw new InvalidOtpException("Invalid OTP");
         }
 
         if (!token.getOtp().equals(otp)) {
@@ -114,22 +132,26 @@ public class OtpServiceImpl implements OtpService {
 
     private EmailVerificationToken createVerificationToken(
             User user,
-            String otp
+            String otp,
+            EmailVerificationToken previousToken
     ) {
 
         LocalDateTime now = LocalDateTime.now();
 
-        return EmailVerificationToken.builder()
+        EmailVerificationToken token = EmailVerificationToken.builder()
                 .user(user)
                 .otp(otp)
                 .purpose(OtpPurpose.EMAIL_VERIFICATION)
-                .expiresAt(
-                        now.plusMinutes(
-                                otpProperties.getExpiryMinutes()
-                        )
-                )
+                .expiresAt(now.plusMinutes(
+                        otpProperties.getExpiryMinutes()))
                 .lastSentAt(now)
                 .build();
+
+        if (previousToken != null) {
+            token.setResendCount(previousToken.getResendCount() + 1);
+        }
+
+        return token;
     }
 
     private boolean isExpired(EmailVerificationToken token) {
@@ -161,6 +183,32 @@ public class OtpServiceImpl implements OtpService {
         );
 
         tokenRepository.save(token);
+    }
+    private void validateResendRules(
+            EmailVerificationToken token
+    ) {
+
+        if (token == null) {
+            return;
+        }
+
+        if (token.getLastSentAt()
+                .plusSeconds(
+                        otpProperties.getResendCooldownSeconds())
+                .isAfter(LocalDateTime.now())) {
+
+            throw new OtpResendCooldownException(
+                    "Please wait before requesting another OTP."
+            );
+        }
+
+        if (token.getResendCount() >=
+                otpProperties.getMaxResendAttempts()) {
+
+            throw new TooManyOtpRequestsException(
+                    "Maximum resend attempts exceeded."
+            );
+        }
     }
 
 }
