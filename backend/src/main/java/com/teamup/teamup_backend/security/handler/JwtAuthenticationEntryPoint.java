@@ -1,6 +1,5 @@
 package com.teamup.teamup_backend.security.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.dto.common.ErrorResponse;
 import jakarta.servlet.ServletException;
@@ -10,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.AuthenticationException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
