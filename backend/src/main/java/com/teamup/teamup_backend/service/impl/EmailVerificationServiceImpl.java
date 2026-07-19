@@ -2,6 +2,7 @@ package com.teamup.teamup_backend.service.impl;
 
 import com.teamup.teamup_backend.config.OtpProperties;
 import com.teamup.teamup_backend.entity.User;
+import com.teamup.teamup_backend.exception.AlreadyVerifiedException;
 import com.teamup.teamup_backend.exception.UserNotFoundException;
 import com.teamup.teamup_backend.repository.UserRepository;
 import com.teamup.teamup_backend.service.EmailVerificationService;
@@ -38,7 +39,7 @@ public class EmailVerificationServiceImpl
         User user = getUser(email);
 
         if (Boolean.TRUE.equals(user.getEmailVerified())) {
-            return;
+            throw new AlreadyVerifiedException("Email is already verified.");
         }
 
         otpService.verifyOtp(email, otp);
@@ -63,5 +64,6 @@ public class EmailVerificationServiceImpl
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found"));
     }
+
 
 }

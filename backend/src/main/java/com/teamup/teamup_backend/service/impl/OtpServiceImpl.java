@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -88,13 +89,6 @@ public class OtpServiceImpl implements OtpService {
                         "Maximum verification attempts exceeded."
                 );
             }
-
-            throw new InvalidOtpException("Invalid OTP");
-        }
-
-        if (!token.getOtp().equals(otp)) {
-
-            incrementFailedAttempts(token);
 
             throw new InvalidOtpException("Invalid OTP");
         }
