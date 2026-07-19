@@ -39,6 +39,7 @@ public class EmailVerificationToken extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private TokenStatus status = TokenStatus.ACTIVE;
 
     @Column
@@ -48,9 +49,11 @@ public class EmailVerificationToken extends BaseEntity {
     private LocalDateTime expiresAt;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer resendCount = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer failedAttempts = 0;
 
     @Column(nullable = false)
