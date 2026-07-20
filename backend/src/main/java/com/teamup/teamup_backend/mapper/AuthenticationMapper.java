@@ -2,6 +2,7 @@ package com.teamup.teamup_backend.mapper;
 
 import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.dto.request.RegisterRequest;
+import com.teamup.teamup_backend.dto.response.LoginResponse;
 import com.teamup.teamup_backend.dto.response.RegisterResponse;
 import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.Role;
@@ -28,6 +29,15 @@ public class AuthenticationMapper {
                 .email(user.getEmail())
                 .message(ApiMessages.REGISTRATION_SUCCESS)
                 .verificationRequired(true)
+                .build();
+    }
+
+    public LoginResponse toLoginResponse(User user) {
+
+        return LoginResponse.builder()
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .role(user.getRole())
                 .build();
     }
 }

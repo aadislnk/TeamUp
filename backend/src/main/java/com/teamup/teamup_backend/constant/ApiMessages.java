@@ -1,6 +1,9 @@
 package com.teamup.teamup_backend.constant;
 
 public final class ApiMessages {
+
+
+
     private ApiMessages() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated.");
         //we do this taaki iska object na bna sake becus it makes no sence!!
@@ -19,4 +22,9 @@ public final class ApiMessages {
     public static final String OTP_SENT_SUCCESS = "OTP sent successfully.";
     public static final String OTP_VERIFIED_SUCCESS = "Email verified successfully.";
     public static final String OTP_RESENT_SUCCESS = "OTP resent successfully.";
+
+    public static final String EMAIL_ALREADY_REGISTERED = "Email is already registered.";
+    public static final String PASSWORD_MISMATCHED = "Passwords do not match.";
+    public static final String INVALID_CREDENTIALS = "Invalid credentials.";
+    public static final String EMAIL_NOT_VERIFIED = "Email is not verified. Please verify your email before proceeding.";
 }
