@@ -5,7 +5,7 @@ public final class ApiMessages {
         throw new UnsupportedOperationException("Utility class cannot be instantiated.");
         //we do this taaki iska object na bna sake becus it makes no sence!!
     }
-    public static final String USER_REGISTERED_SUCCESS = "User registered successfully!";
+    public static final String REGISTRATION_SUCCESS = "User registered successfully!";
     public static final String LOGIN_SUCCESS = "Login successful.";
     public static final String LOGOUT_SUCCESS = "Logout successful.";
     public static final String PASSWORD_CHANGED_SUCCESS = "Password changed successfully.";

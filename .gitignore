@@ -1,4 +1,4 @@
-HELP.md
+backend/HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -31,7 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
-##intellij##
-.idea
+
 ##to avoid sensitive info##
 backend\src\main\resources\application-local.properties
