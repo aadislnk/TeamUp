@@ -32,12 +32,19 @@ public class AuthenticationMapper {
                 .build();
     }
 
-    public LoginResponse toLoginResponse(User user) {
+    public LoginResponse toLoginResponse(
+            User user,
+            String accessToken,
+            Long expiresIn
+    ) {
 
         return LoginResponse.builder()
+                .accessToken(accessToken)
+                .expiresIn(expiresIn)
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole())
                 .build();
     }
+
 }

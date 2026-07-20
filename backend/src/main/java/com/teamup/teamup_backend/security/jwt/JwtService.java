@@ -1,5 +1,7 @@
 package com.teamup.teamup_backend.security.jwt;
 
+import com.teamup.teamup_backend.entity.User;
+import com.teamup.teamup_backend.security.model.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -23,6 +25,13 @@ public class JwtService {
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
+
+    public long getExpiration() {
+        return jwtExpiration;
+    }
+    public String generateToken(User user) {
+        return generateToken(new CustomUserDetails(user));
+    }
 
     private SecretKey getSigningKey(){
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);

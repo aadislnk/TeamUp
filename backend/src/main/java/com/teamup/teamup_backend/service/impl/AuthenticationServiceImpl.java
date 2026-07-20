@@ -12,6 +12,8 @@ import com.teamup.teamup_backend.exception.ForbiddenException;
 import com.teamup.teamup_backend.exception.UnauthorizedException;
 import com.teamup.teamup_backend.mapper.AuthenticationMapper;
 import com.teamup.teamup_backend.repository.UserRepository;
+import com.teamup.teamup_backend.security.jwt.JwtService;
+import com.teamup.teamup_backend.security.model.CustomUserDetails;
 import com.teamup.teamup_backend.service.AuthenticationService;
 import com.teamup.teamup_backend.service.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationMapper authenticationMapper;
     private final EmailVerificationService emailVerificationService;
+    private final JwtService  jwtService;
 
     @Override
     public RegisterResponse register(RegisterRequest request) {
@@ -54,13 +57,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return buildRegisterResponse(savedUser);
     }
 
-    private void validatePasswords(RegisterRequest request) {
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new BadRequestException(ApiMessages.PASSWORD_MISMATCHED);
-        }
-    }
-
     @Override
     public LoginResponse login(LoginRequest request) {
 
@@ -76,7 +72,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new ForbiddenException(ApiMessages.EMAIL_NOT_VERIFIED);
         }
 
-        return authenticationMapper.toLoginResponse(user);
+
+        String accessToken =
+                jwtService.generateToken(user);
+
+        long expiresIn =
+                jwtService.getExpiration();
+
+        return authenticationMapper.toLoginResponse(
+                user,
+                accessToken,
+                expiresIn
+        );
+    }
+
+    private void validatePasswords(RegisterRequest request) {
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BadRequestException(ApiMessages.PASSWORD_MISMATCHED);
+        }
     }
 
     private User createNewUser(RegisterRequest request) {
