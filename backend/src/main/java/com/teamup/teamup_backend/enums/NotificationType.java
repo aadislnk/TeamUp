@@ -1,6 +1,12 @@
 package com.teamup.teamup_backend.enums;
 
 public enum NotificationType {
-    REQUEST_ACCEPTED,
-    REQUEST_REJECTED
+
+    JOIN_REQUEST_RECEIVED,
+
+    JOIN_REQUEST_ACCEPTED,
+
+    JOIN_REQUEST_REJECTED,
+
+    JOIN_REQUEST_WITHDRAWN
 }

@@ -1,6 +1,7 @@
 package com.teamup.teamup_backend.service.impl;
 
 import com.teamup.teamup_backend.config.MailProperties;
+import com.teamup.teamup_backend.exception.EmailSendingException;
 import com.teamup.teamup_backend.mail.EmailSubjects;
 import com.teamup.teamup_backend.mail.EmailTemplateBuilder;
 import com.teamup.teamup_backend.service.EmailService;
@@ -16,6 +17,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -26,61 +28,188 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
     private final MailProperties mailProperties;
-    private final EmailTemplateBuilder templateBuilder;
+    private final EmailTemplateBuilder emailTemplateBuilder;
 
     @Override
     public void sendVerificationEmail(
-            String to,
+            String recipientEmail,
             String userName,
             String otp,
             int expiryMinutes
     ) {
-
-        String html = templateBuilder.buildVerificationEmail(
+        String html = emailTemplateBuilder.buildVerificationEmail(
                 userName,
                 otp,
                 expiryMinutes
         );
 
-        try {
+        sendEmail(
+                recipientEmail,
+                EmailSubjects.VERIFY_EMAIL,
+                html
+        );
+    }
 
+    @Override
+    public void sendWelcomeEmail(
+            String recipientEmail,
+            String userName
+    ) {
+        String html = emailTemplateBuilder.buildWelcomeEmail(
+                userName
+        );
+
+        sendEmail(
+                recipientEmail,
+                EmailSubjects.WELCOME_EMAIL,
+                html
+        );
+    }
+
+    @Override
+    public void sendJoinRequestReceivedEmail(
+            String recipientEmail,
+            String leaderName,
+            String applicantName,
+            String teamName,
+            String applicantRole
+    ) {
+        String html = emailTemplateBuilder.buildJoinRequestReceivedEmail(
+                leaderName,
+                applicantName,
+                teamName,
+                applicantRole
+        );
+
+        sendEmail(
+                recipientEmail,
+                EmailSubjects.JOIN_REQUEST_RECEIVED,
+                html
+        );
+    }
+
+    @Override
+    public void sendJoinRequestAcceptedEmail(
+            String recipientEmail,
+            String userName,
+            String teamName,
+            String teamLeader
+    ) {
+        String html = emailTemplateBuilder.buildJoinRequestAcceptedEmail(
+                userName,
+                teamName,
+                teamLeader
+        );
+
+        sendEmail(
+                recipientEmail,
+                EmailSubjects.JOIN_REQUEST_ACCEPTED,
+                html
+        );
+    }
+
+    @Override
+    public void sendJoinRequestRejectedEmail(
+            String recipientEmail,
+            String userName,
+            String teamName,
+            String teamLeader
+    ) {
+        String html = emailTemplateBuilder.buildJoinRequestRejectedEmail(
+                userName,
+                teamName,
+                teamLeader
+        );
+
+        sendEmail(
+                recipientEmail,
+                EmailSubjects.JOIN_REQUEST_REJECTED,
+                html
+        );
+    }
+
+    @Override
+    public void sendTeamInvitationEmail(
+            String recipientEmail,
+            String userName,
+            String teamName,
+            String teamLeader,
+            String eventName,
+            String teamRole
+    ) {
+        String html = emailTemplateBuilder.buildTeamInvitationEmail(
+                userName,
+                teamName,
+                teamLeader,
+                eventName,
+                teamRole
+        );
+
+        sendEmail(
+                recipientEmail,
+                EmailSubjects.TEAM_INVITATION,
+                html
+        );
+    }
+
+
+
+
+    private void sendEmail(
+            String recipientEmail,
+            String subject,
+            String html
+    ) {
+        try {
             MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(
+                    message,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name()
+            );
 
             helper.setFrom(
                     mailProperties.getFromAddress(),
                     mailProperties.getFromName()
             );
-
-            helper.setTo(to);
-
-            helper.setSubject(EmailSubjects.VERIFY_EMAIL);
-
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
             helper.setText(html, true);
 
             mailSender.send(message);
 
-            log.info("Verification email sent successfully to {}", to);
+            log.info(
+                    "Email sent successfully. Recipient: {}, Subject: {}",
+                    recipientEmail,
+                    subject
+            );
 
-        } catch (MailAuthenticationException ex) {
+        } catch (MessagingException exception) {
 
-            log.error("Mail authentication failed.", ex);
+            log.error(
+                    "Failed to prepare email. Recipient: {}, Subject: {}",
+                    recipientEmail,
+                    subject,
+                    exception
+            );
 
-            throw ex;
+            throw new EmailSendingException(
+                    "Failed to prepare email."
+            );
 
-        } catch (MessagingException ex) {
+        } catch (MailException exception) {
 
-            log.error("Failed to build email for {}", to, ex);
+            log.error(
+                    "Failed to send email. Recipient: {}, Subject: {}",
+                    recipientEmail,
+                    subject,
+                    exception
+            );
 
-            throw new RuntimeException("Unable to prepare email.", ex);
-
-        } catch (MailException ex) {
-
-            log.error("Failed to send verification email to {}", to, ex);
-
-            throw ex;
+            throw new EmailSendingException(
+                    "Failed to send email."
+            );
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
