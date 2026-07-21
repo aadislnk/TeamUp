@@ -5,6 +5,7 @@ import com.teamup.teamup_backend.enums.TeamStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +18,8 @@ import java.util.List;
         name = "teams",
         indexes = {
                 @Index(name = "idx_team_event", columnList = "event_id"),
-                @Index(name = "idx_team_leader", columnList = "leader_id")
+                @Index(name = "idx_team_leader", columnList = "leader_id"),
+                @Index(name = "idx_team_status", columnList = "status")
         }
 )
 public class Team extends BaseEntity {
@@ -30,6 +32,10 @@ public class Team extends BaseEntity {
 
     @Column(name = "max_members",nullable = false)
     private Integer maxMembers;
+
+    @Column(name = "current_members", nullable = false)
+    @Builder.Default
+    private Integer currentMembers = 1;
 
     @Column(name = "recruitment_open",nullable = false)
     private Boolean recruitmentOpen;
@@ -49,9 +55,11 @@ public class Team extends BaseEntity {
     @JoinColumn(name = "leader_id",nullable = false)
     private User leader;
 
-    @OneToMany(mappedBy = "team",fetch = FetchType.LAZY)
-    private List<TeamMember> members;
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<TeamMember> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "team",fetch =  FetchType.LAZY)
-    private List<JoinRequest>  joinRequests;
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<JoinRequest> joinRequests = new ArrayList<>();
 }
