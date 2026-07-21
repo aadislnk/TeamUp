@@ -5,6 +5,7 @@ import com.teamup.teamup_backend.security.handler.JwtAuthenticationEntryPoint;
 import com.teamup.teamup_backend.security.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -72,10 +73,12 @@ public class SecurityConfig {
 
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
 
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/v1/auth/**")
-                        .permitAll()
-                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui/**","/v3/api-docs/**","/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/users/me/**" ).authenticated()
+                        .requestMatchers("/api/v1/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{userId}").permitAll()
+                        .anyRequest().authenticated() )
                 .authenticationProvider(authenticationProvider())
 
                 .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);

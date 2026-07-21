@@ -33,4 +33,5 @@ public final class ApiMessages {
     public static final String PROFILE_UPDATED = "Profile updated successfully.";
 
     public static final String PROFILE_AVATAR_UPDATED = "Profile avatar updated successfully.";
+    public static final String PROFILE_AVATAR_REMOVED = "Profile avatar removed successfully.";
 }

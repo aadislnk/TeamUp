@@ -19,10 +19,6 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ===========================
-    // Custom Exceptions
-    // ===========================
-
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(
             BadRequestException ex,
@@ -39,6 +35,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
             ResourceNotFoundException ex,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                null,
+                request
+        );
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(
+            UserNotFoundException ex,
             HttpServletRequest request) {
 
         return buildErrorResponse(
@@ -101,9 +109,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===========================
-    // Validation Exception
-    // ===========================
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
@@ -124,9 +130,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===========================
-    // Constraint Violation
-    // ===========================
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(
@@ -146,9 +149,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===========================
-    // Invalid JSON
-    // ===========================
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
@@ -163,9 +163,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===========================
-    // Generic Exception
-    // ===========================
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(
@@ -180,10 +178,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // ===========================
-    // Helper Methods
-    // ===========================
-
+    //helpers
     private ResponseEntity<ErrorResponse> buildErrorResponse(
             HttpStatus status,
             String message,

@@ -7,12 +7,11 @@ import com.teamup.teamup_backend.entity.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
 public final class UserMapper {
 
-//    private UserMapper() {
-//        throw new UnsupportedOperationException("Utility class");
-//    }
+    private UserMapper() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
      // Convert User entity to MyProfileResponse.
     public static MyProfileResponse toMyProfileResponse(User user) {

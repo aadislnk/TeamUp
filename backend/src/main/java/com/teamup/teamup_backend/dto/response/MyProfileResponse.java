@@ -35,8 +35,6 @@ public class MyProfileResponse {
 
     private Boolean emailVerified;
 
-    private Boolean profileCompleted;
-
     private LocalDateTime createdAt;
 
 }
