@@ -23,14 +23,11 @@ import lombok.*;
 )
 public class UserSkill extends BaseEntity{
 
-    @Column(length = 20)
-    private String proficiency;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "skill_id", nullable = false)
     private Skill skill;
 }

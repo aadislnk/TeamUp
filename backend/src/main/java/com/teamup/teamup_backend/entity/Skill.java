@@ -11,12 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "skills")
+@Table(name = "skills",indexes = {@Index(name = "idx_skill_name", columnList = "name") } )
 public class Skill extends BaseEntity{
 
     @Column(nullable = false,unique = true,length = 100)
-    String name;
+    private String name;
 
     @OneToMany(mappedBy = "skill",fetch = FetchType.LAZY)
-    private List<UserSkill> skills;
+    private List<UserSkill> userSkills;
 }

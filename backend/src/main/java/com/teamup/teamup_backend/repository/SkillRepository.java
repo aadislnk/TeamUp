@@ -2,6 +2,14 @@ package com.teamup.teamup_backend.repository;
 
 import com.teamup.teamup_backend.entity.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-public interface SkillRepository extends JpaRepository<Skill,Long> {
+@Repository
+public interface SkillRepository extends JpaRepository<Skill, Long> {
+
+    Optional<Skill> findByName(String name);
+
+    boolean existsByName(String name);
+
 }
