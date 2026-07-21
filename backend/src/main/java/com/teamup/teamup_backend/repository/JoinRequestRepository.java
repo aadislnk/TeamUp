@@ -31,4 +31,9 @@ public interface JoinRequestRepository extends JpaRepository<JoinRequest, Long> 
             Team team,
             JoinRequestStatus status
     );
+
+    List<JoinRequest> findByUserAndStatus(
+            User user,
+            JoinRequestStatus status
+    );
 }
