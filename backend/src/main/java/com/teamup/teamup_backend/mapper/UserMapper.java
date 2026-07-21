@@ -3,9 +3,12 @@ package com.teamup.teamup_backend.mapper;
 import com.teamup.teamup_backend.dto.request.UpdateProfileRequest;
 import com.teamup.teamup_backend.dto.response.MyProfileResponse;
 import com.teamup.teamup_backend.dto.response.PublicProfileResponse;
+import com.teamup.teamup_backend.dto.response.UserSearchResponse;
 import com.teamup.teamup_backend.entity.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 public final class UserMapper {
 
@@ -71,6 +74,32 @@ public final class UserMapper {
         if (request.getAvatar() != null) {
             user.setProfileImageUrl(request.getAvatar().getFileName());
         }
+    }
+
+    public UserSearchResponse toUserSearchResponse(User user){
+
+        if(user == null){
+            return null;
+        }
+
+        return UserSearchResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .college(user.getCollege())
+                .profileImageUrl(user.getProfileImageUrl())
+                .bio(user.getBio())
+                .build();
+    }
+
+    public List<UserSearchResponse> toUserSearchResponseList(List<User> users){
+
+        if(users == null){
+            return List.of();
+        }
+
+        return users.stream()
+                .map(this::toUserSearchResponse)
+                .toList();
     }
 
 }

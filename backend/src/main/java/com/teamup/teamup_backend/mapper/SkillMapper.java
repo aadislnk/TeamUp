@@ -4,14 +4,14 @@ import com.teamup.teamup_backend.dto.response.SkillResponse;
 import com.teamup.teamup_backend.dto.response.UserSkillResponse;
 import com.teamup.teamup_backend.entity.Skill;
 import com.teamup.teamup_backend.entity.UserSkill;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
+@Component
 public final class SkillMapper {
 
-    private SkillMapper() {
-    }
-
-    public static SkillResponse toSkillResponse(Skill skill) {
+    public SkillResponse toSkillResponse(Skill skill) {
 
         if (skill == null) {
             return null;
@@ -23,7 +23,7 @@ public final class SkillMapper {
                 .build();
     }
 
-    public static UserSkillResponse toUserSkillResponse(UserSkill userSkill) {
+    public UserSkillResponse toUserSkillResponse(UserSkill userSkill) {
 
         if (userSkill == null) {
             return null;
@@ -35,18 +35,25 @@ public final class SkillMapper {
                 .build();
     }
 
-    public static List<SkillResponse> toSkillResponseList(List<Skill> skills) {
+    public List<SkillResponse> toSkillResponseList(List<Skill> skills) {
+
+        if (skills == null) {
+            return List.of();
+        }
 
         return skills.stream()
-                .map(SkillMapper::toSkillResponse)
+                .map(this::toSkillResponse)
                 .toList();
     }
 
-    public static List<UserSkillResponse> toUserSkillResponseList(List<UserSkill> userSkills) {
+    public List<UserSkillResponse> toUserSkillResponseList(List<UserSkill> userSkills) {
+
+        if (userSkills == null) {
+            return List.of();
+        }
 
         return userSkills.stream()
-                .map(SkillMapper::toUserSkillResponse)
+                .map(this::toUserSkillResponse)
                 .toList();
     }
-
 }
