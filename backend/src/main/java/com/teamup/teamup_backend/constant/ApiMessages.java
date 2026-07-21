@@ -27,4 +27,10 @@ public final class ApiMessages {
     public static final String PASSWORD_MISMATCHED = "Passwords do not match.";
     public static final String INVALID_CREDENTIALS = "Invalid credentials.";
     public static final String EMAIL_NOT_VERIFIED = "Email is not verified. Please verify your email before proceeding.";
+
+    public static final String PROFILE_FETCHED = "Profile fetched successfully.";
+
+    public static final String PROFILE_UPDATED = "Profile updated successfully.";
+
+    public static final String PROFILE_AVATAR_UPDATED = "Profile avatar updated successfully.";
 }

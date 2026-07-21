@@ -28,4 +28,9 @@ public final class ValidationMessages {
     // Event
     public static final String EVENT_TITLE_REQUIRED = "Event title is required.";
     public static final String EVENT_DESCRIPTION_TOO_LONG = "Event description must not exceed 1000 characters.";
+
+    public static final String INVALID_AVATAR = "Please select a valid avatar.";
+
+    public static final String INVALID_WHATSAPP_NUMBER =
+            "Please enter a valid WhatsApp number.";
 }

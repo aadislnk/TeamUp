@@ -16,4 +16,6 @@ public final class ApplicationConstants {
     public static final String SYSTEM = "SYSTEM";
     public static final String UNKNOWN = "UNKNOWN";
 
+    public static final String WHATSAPP_NUMBER_REGEX =
+            "^\\+?[1-9]\\d{7,14}$";
 }

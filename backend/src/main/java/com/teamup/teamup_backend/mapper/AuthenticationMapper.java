@@ -5,6 +5,7 @@ import com.teamup.teamup_backend.dto.request.RegisterRequest;
 import com.teamup.teamup_backend.dto.response.LoginResponse;
 import com.teamup.teamup_backend.dto.response.RegisterResponse;
 import com.teamup.teamup_backend.entity.User;
+import com.teamup.teamup_backend.enums.Avatar;
 import com.teamup.teamup_backend.enums.Role;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class AuthenticationMapper {
                 .academicYear(request.getAcademicYear())
                 .gender(request.getGender())
                 .role(Role.USER)
+                .profileImageUrl(Avatar.DEFAULT.getFileName())
                 .emailVerified(false)
                 .build();
     }

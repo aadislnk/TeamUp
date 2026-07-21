@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
         type = SecuritySchemeType.HTTP,
         scheme = "bearer",
         bearerFormat = "JWT",
-        in = SecuritySchemeIn.HEADERgit
+        in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfig {
 

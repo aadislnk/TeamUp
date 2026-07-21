@@ -2,6 +2,7 @@ package com.teamup.teamup_backend.entity;
 
 import com.teamup.teamup_backend.enums.AcademicYear;
 import com.teamup.teamup_backend.enums.Gender;
+import com.teamup.teamup_backend.enums.PreferredRole;
 import com.teamup.teamup_backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,12 +43,12 @@ public class User extends BaseEntity{
     private Gender gender;
 
     @Column(nullable = true,columnDefinition = "TEXT")
-    private String about;
+    private String bio;
 
-    @Column(name = "github_url", length = 255)
+    @Column(name = "github_url", length = 500)
     private String githubUrl;
 
-    @Column(name = "linkedin_url", length = 255)
+    @Column(name = "linkedin_url", length = 500)
     private String linkedinUrl;
 
     @Column(name = "whatsapp_number", length = 20)
@@ -55,6 +56,13 @@ public class User extends BaseEntity{
 
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "preferred_role")
+    private PreferredRole preferredRole;
+
+    @Column(name = "profile_image_url", length = 500)
+    private String profileImageUrl;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<EmailVerificationToken> emailVerificationTokens;
