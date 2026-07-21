@@ -39,6 +39,8 @@ public class TeamResponse {
 
     private List<SkillResponse> requiredSkills;
 
+    List<MemberResponse> members;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

@@ -1,7 +1,10 @@
 package com.teamup.teamup_backend.service;
 
 import com.teamup.teamup_backend.dto.request.CreateTeamRequest;
+import com.teamup.teamup_backend.dto.request.TeamSearchRequest;
 import com.teamup.teamup_backend.dto.request.UpdateTeamRequest;
+import com.teamup.teamup_backend.dto.response.LeaderDashboardResponse;
+import com.teamup.teamup_backend.dto.response.MemberResponse;
 import com.teamup.teamup_backend.dto.response.SkillResponse;
 import com.teamup.teamup_backend.dto.response.TeamResponse;
 import com.teamup.teamup_backend.enums.TeamStatus;
@@ -48,6 +51,17 @@ public interface TeamService {
 
     List<SkillResponse> getRequiredSkills(
             Long teamId
+    );
+
+    List<MemberResponse> getTeamMembers(
+            Long teamId
+    );
+
+    LeaderDashboardResponse getLeaderDashboard(Long teamId);
+
+    Page<TeamResponse> searchTeams(
+            TeamSearchRequest request,
+            Pageable pageable
     );
 
 }

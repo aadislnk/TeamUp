@@ -21,4 +21,5 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     long countByTeam(Team team);
 
     void deleteByTeamAndUser(Team team, User user);
+
 }

@@ -2,7 +2,9 @@ package com.teamup.teamup_backend.service.impl;
 
 import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.dto.request.CreateTeamRequest;
+import com.teamup.teamup_backend.dto.request.TeamSearchRequest;
 import com.teamup.teamup_backend.dto.request.UpdateTeamRequest;
+import com.teamup.teamup_backend.dto.response.LeaderDashboardResponse;
 import com.teamup.teamup_backend.dto.response.SkillResponse;
 import com.teamup.teamup_backend.dto.response.TeamResponse;
 import com.teamup.teamup_backend.entity.*;
@@ -12,17 +14,18 @@ import com.teamup.teamup_backend.exception.ForbiddenException;
 import com.teamup.teamup_backend.exception.ResourceNotFoundException;
 import com.teamup.teamup_backend.mapper.SkillMapper;
 import com.teamup.teamup_backend.mapper.TeamMapper;
-import com.teamup.teamup_backend.repository.EventRepository;
-import com.teamup.teamup_backend.repository.SkillRepository;
-import com.teamup.teamup_backend.repository.TeamRepository;
-import com.teamup.teamup_backend.repository.TeamSkillRepository;
+import com.teamup.teamup_backend.repository.*;
 import com.teamup.teamup_backend.service.CurrentUserService;
 import com.teamup.teamup_backend.service.TeamService;
+import com.teamup.teamup_backend.specification.TeamSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.teamup.teamup_backend.dto.response.MemberResponse;
+import com.teamup.teamup_backend.mapper.MemberMapper;
 
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class TeamServiceImpl implements TeamService {
     private final TeamSkillRepository teamSkillRepository;
     private final SkillRepository skillRepository;
     private final SkillMapper skillMapper;
+    private final TeamMemberRepository teamMemberRepository;
+    private final MemberMapper memberMapper;
+    private final JoinRequestRepository joinRequestRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -234,6 +240,49 @@ public class TeamServiceImpl implements TeamService {
                 .map(skillMapper::toResponse)
                 .toList();
     }
+    @Override
+    @Transactional(readOnly = true)
+    public List<MemberResponse> getTeamMembers(Long teamId) {
+
+        Team team = getTeamOrThrow(teamId);
+
+        return teamMemberRepository.findByTeam(team)
+                .stream()
+                .map(memberMapper::toResponse)
+                .toList();
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public LeaderDashboardResponse getLeaderDashboard(Long teamId) {
+
+        Team team = getTeamOrThrow(teamId);
+
+        validateLeaderOwnership(team);
+
+        return LeaderDashboardResponse.builder()
+                .team(buildTeamResponse(team))
+                .pendingRequestsCount(0) // temporary
+                .acceptedMembers(team.getCurrentMembers())
+                .recruitmentOpen(team.getRecruitmentOpen())
+                .build();
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public Page<TeamResponse> searchTeams(
+            TeamSearchRequest request,
+            Pageable pageable
+    ) {
+
+        Specification<Team> specification = Specification
+                .where(TeamSpecification.hasKeyword(request.getKeyword()))
+                .and(TeamSpecification.hasEvent(request.getEventId()))
+                .and(TeamSpecification.hasStatus(request.getStatus()))
+                .and(TeamSpecification.hasRecruitment(request.getRecruitmentOpen()))
+                .and(TeamSpecification.hasRequiredSkill(request.getSkillId()));
+
+        return teamRepository.findAll(specification, pageable)
+                .map(this::buildTeamResponse);
+    }
 //helpers
 private Team getTeamOrThrow(Long id) {
 
@@ -374,6 +423,13 @@ private Team getTeamOrThrow(Long id) {
                         .stream()
                         .map(TeamSkill::getSkill)
                         .map(skillMapper::toResponse)
+                        .toList()
+        );
+
+        response.setMembers(
+                teamMemberRepository.findByTeam(team)
+                        .stream()
+                        .map(memberMapper::toResponse)
                         .toList()
         );
 

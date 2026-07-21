@@ -62,4 +62,8 @@ public class Team extends BaseEntity {
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     @Builder.Default
     private List<JoinRequest> joinRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<TeamSkill> teamSkills = new ArrayList<>();
 }
