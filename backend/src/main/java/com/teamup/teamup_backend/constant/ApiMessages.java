@@ -39,4 +39,5 @@ public final class ApiMessages {
     public static final String SKILLS_FETCHED =  "Skills fetched successfully.";
     public static final String SKILLS_ADDED =  "Skills added successfully.";
     public static final String SKILL_REMOVED =  "Skills removed successfully.";
+    public static final String USERS_FETCHED = "Users fetched successfully.";
 }

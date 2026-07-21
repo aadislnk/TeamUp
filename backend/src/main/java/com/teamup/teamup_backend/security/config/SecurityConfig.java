@@ -1,5 +1,6 @@
 package com.teamup.teamup_backend.security.config;
 
+import com.teamup.teamup_backend.constant.ApiPaths;
 import com.teamup.teamup_backend.security.filter.JwtAuthenticationFilter;
 import com.teamup.teamup_backend.security.handler.JwtAuthenticationEntryPoint;
 import com.teamup.teamup_backend.security.service.CustomUserDetailsService;
@@ -30,12 +31,14 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private final CustomUserDetailsService userDetailsService;
-
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, CustomUserDetailsService userDetailsService, JwtAuthenticationEntryPoint authenticationEntryPoint) {
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomUserDetailsService userDetailsService,
+            JwtAuthenticationEntryPoint authenticationEntryPoint
+    ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
         this.authenticationEntryPoint = authenticationEntryPoint;
@@ -48,7 +51,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(userDetailsService);
 
         provider.setPasswordEncoder(passwordEncoder());
 
@@ -57,51 +62,63 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration)
-            throws Exception {
+            AuthenticationConfiguration configuration
+    ) throws Exception {
 
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
+
                 .cors(Customizer.withDefaults())
 
-                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(authenticationEntryPoint))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**","/v3/api-docs/**","/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/users/me/**" ).authenticated()
-                        .requestMatchers("/api/v1/users/me").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/{userId}").permitAll()
-                        .anyRequest().authenticated() )
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**").permitAll()
+                        .requestMatchers(ApiPaths.AUTH + "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,ApiPaths.SKILLS).permitAll()
+                        .requestMatchers(HttpMethod.GET,ApiPaths.USERS + ApiPaths.USER_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET,ApiPaths.USERS + ApiPaths.USER_ID + ApiPaths.USER_SKILLS).permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.SEARCH).permitAll()
+                        .requestMatchers(ApiPaths.USERS + ApiPaths.CURRENT_USER, ApiPaths.USERS + ApiPaths.CURRENT_USER + "/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS).authenticated()
+                        .requestMatchers(HttpMethod.POST,ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS).authenticated()
+                        .requestMatchers(HttpMethod.DELETE, ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS + ApiPaths.SKILL_ID).authenticated()
+                        .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-
-                .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class );
 
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173") );
+
         configuration.setAllowedMethods(List.of("*"));
+
         configuration.setAllowedHeaders(List.of("*"));
+
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
-    // React frontend alag origin (localhost:5173) se backend ko access karegi,
-// isliye browser ko cross-origin requests allow karne ke liye CORS configure kiya hai.
 }

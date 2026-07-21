@@ -2,6 +2,7 @@ package com.teamup.teamup_backend.entity;
 
 import com.teamup.teamup_backend.enums.EventMode;
 import com.teamup.teamup_backend.enums.EventStatus;
+import com.teamup.teamup_backend.enums.EventType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "events")
+@Table(
+        name = "events",
+        indexes = {
+                @Index(name = "idx_event_status", columnList = "status"),
+                @Index(name = "idx_event_type", columnList = "type"),
+                @Index(name = "idx_event_mode", columnList = "mode"),
+                @Index(name = "idx_event_date", columnList = "event_date")
+        }
+)
 public class Event extends BaseEntity {
 
     @Column(nullable = false,length = 255)
@@ -29,8 +38,23 @@ public class Event extends BaseEntity {
     @Column(nullable = true,length = 255)
     private String location;
 
+    @Column(name = "max_team_size", nullable = false)
+    private Integer maxTeamSize;
+
+    @Column(name = "min_team_size", nullable = false)
+    private Integer minTeamSize;
+
+    @Column(name = "registration_open", nullable = false)
+    private Boolean registrationOpen;
+
     @Column(name = "event_url",nullable = true,length = 255)
     private String eventUrl;
+
+    @Column(name = "registration_url", length = 500)
+    private String registrationUrl;
+
+    @Column(name = "banner_url", length = 500)
+    private String bannerUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -39,6 +63,10 @@ public class Event extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EventStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private EventType type;
 
     @Column(name = "registration_deadline",nullable = false)
     private LocalDateTime registrationDeadline;
