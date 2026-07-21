@@ -70,4 +70,8 @@ public final class ApiMessages {
 
     public static final String INVALID_SKILL = "Selected skill does not exist.";
 
+    public static final String SUCCESS = "Success";
+    public static final String FAILURE = "Failure";
+    public static final String RECRUITMENT_STATUS_UPDATED = "Recruitment status updated successfully.";
+
 }
