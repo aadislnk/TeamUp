@@ -59,4 +59,15 @@ public final class ApiMessages {
     public static final String TEAM_NOT_OPEN = "Team is not open for recruitment. You cannot join this team.";
     public static final String RECRUITMENT_CLOSED = "Recruitment for this team is closed. You cannot join this team.";
     public static final String TEAM_FULL = "This team has reached its maximum member capacity. You cannot join this team.";
+
+    public static final String REQUIRED_SKILL_ADDED = "Required skill added successfully.";
+
+    public static final String REQUIRED_SKILL_REMOVED = "Required skill removed successfully.";
+
+    public static final String REQUIRED_SKILL_ALREADY_EXISTS = "This skill has already been added to the team.";
+
+    public static final String REQUIRED_SKILL_NOT_FOUND = "Required skill not found for this team.";
+
+    public static final String INVALID_SKILL = "Selected skill does not exist.";
+
 }

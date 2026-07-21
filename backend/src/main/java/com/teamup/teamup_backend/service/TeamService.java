@@ -2,10 +2,13 @@ package com.teamup.teamup_backend.service;
 
 import com.teamup.teamup_backend.dto.request.CreateTeamRequest;
 import com.teamup.teamup_backend.dto.request.UpdateTeamRequest;
+import com.teamup.teamup_backend.dto.response.SkillResponse;
 import com.teamup.teamup_backend.dto.response.TeamResponse;
 import com.teamup.teamup_backend.enums.TeamStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface TeamService {
 
@@ -27,5 +30,24 @@ public interface TeamService {
     );
 
     Page<TeamResponse> getMyTeams(Pageable pageable);
+
+    TeamResponse updateRecruitmentStatus(
+            Long teamId,
+            Boolean recruitmentOpen
+    );
+
+    TeamResponse addRequiredSkill(
+            Long teamId,
+            Long skillId
+    );
+
+    TeamResponse removeRequiredSkill(
+            Long teamId,
+            Long skillId
+    );
+
+    List<SkillResponse> getRequiredSkills(
+            Long teamId
+    );
 
 }

@@ -4,6 +4,7 @@ import com.teamup.teamup_backend.enums.TeamStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,6 +36,8 @@ public class TeamResponse {
     private Long eventId;
 
     private String eventTitle;
+
+    private List<SkillResponse> requiredSkills;
 
     private LocalDateTime createdAt;
 

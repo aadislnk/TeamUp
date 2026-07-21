@@ -3,17 +3,19 @@ package com.teamup.teamup_backend.service.impl;
 import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.dto.request.CreateTeamRequest;
 import com.teamup.teamup_backend.dto.request.UpdateTeamRequest;
+import com.teamup.teamup_backend.dto.response.SkillResponse;
 import com.teamup.teamup_backend.dto.response.TeamResponse;
-import com.teamup.teamup_backend.entity.Event;
-import com.teamup.teamup_backend.entity.Team;
-import com.teamup.teamup_backend.entity.User;
+import com.teamup.teamup_backend.entity.*;
 import com.teamup.teamup_backend.enums.TeamStatus;
 import com.teamup.teamup_backend.exception.BadRequestException;
 import com.teamup.teamup_backend.exception.ForbiddenException;
 import com.teamup.teamup_backend.exception.ResourceNotFoundException;
+import com.teamup.teamup_backend.mapper.SkillMapper;
 import com.teamup.teamup_backend.mapper.TeamMapper;
 import com.teamup.teamup_backend.repository.EventRepository;
+import com.teamup.teamup_backend.repository.SkillRepository;
 import com.teamup.teamup_backend.repository.TeamRepository;
+import com.teamup.teamup_backend.repository.TeamSkillRepository;
 import com.teamup.teamup_backend.service.CurrentUserService;
 import com.teamup.teamup_backend.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,20 +35,23 @@ public class TeamServiceImpl implements TeamService {
     private final EventRepository eventRepository;
     private final CurrentUserService currentUserService;
     private final TeamMapper teamMapper;
+    private final TeamSkillRepository teamSkillRepository;
+    private final SkillRepository skillRepository;
+    private final SkillMapper skillMapper;
 
     @Override
     @Transactional(readOnly = true)
     public Page<TeamResponse> getAllTeams(Pageable pageable) {
 
         return teamRepository.findAll(pageable)
-                .map(teamMapper::toResponse);
+                .map(this::buildTeamResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
     public TeamResponse getTeamById(Long teamId) {
 
-        return teamMapper.toResponse(
+        return buildTeamResponse(
                 getTeamOrThrow(teamId)
         );
     }
@@ -74,7 +81,7 @@ public class TeamServiceImpl implements TeamService {
 
         Team savedTeam = teamRepository.save(team);
 
-        return teamMapper.toResponse(savedTeam);
+        return buildTeamResponse(savedTeam);
     }
 
     @Override
@@ -102,7 +109,7 @@ public class TeamServiceImpl implements TeamService {
 
         Team updatedTeam = teamRepository.save(team);
 
-        return teamMapper.toResponse(updatedTeam);
+        return buildTeamResponse(updatedTeam);
     }
 
     @Override
@@ -117,11 +124,31 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.delete(team);
     }
     @Override
+    public TeamResponse updateRecruitmentStatus(
+            Long teamId,
+            Boolean recruitmentOpen
+    ) {
+
+        Team team = getTeamOrThrow(teamId);
+
+        validateLeaderOwnership(team);
+
+        if (Boolean.TRUE.equals(recruitmentOpen)) {
+            validateRecruitmentCanBeOpened(team);
+        }
+
+        team.setRecruitmentOpen(recruitmentOpen);
+
+        Team updatedTeam = teamRepository.save(team);
+
+        return buildTeamResponse(updatedTeam);
+    }
+    @Override
     @Transactional(readOnly = true)
     public Page<TeamResponse> getOpenTeams(Pageable pageable) {
 
         return teamRepository.findByRecruitmentOpenTrue(pageable)
-                .map(teamMapper::toResponse);
+                .map(this::buildTeamResponse);
     }
     @Override
     @Transactional(readOnly = true)
@@ -131,7 +158,7 @@ public class TeamServiceImpl implements TeamService {
     ) {
 
         return teamRepository.findByStatus(status, pageable)
-                .map(teamMapper::toResponse);
+                .map(this::buildTeamResponse);
     }
     @Override
     @Transactional(readOnly = true)
@@ -142,9 +169,71 @@ public class TeamServiceImpl implements TeamService {
         return teamRepository.findByLeader(
                 currentUser,
                 pageable
-        ).map(teamMapper::toResponse);
+        ).map(this::buildTeamResponse);
     }
+    @Override
+    public TeamResponse addRequiredSkill(
+            Long teamId,
+            Long skillId
+    ) {
 
+        Team team = getTeamOrThrow(teamId);
+
+        validateLeaderOwnership(team);
+
+        Skill skill = getSkillOrThrow(skillId);
+
+        if (teamSkillRepository.existsByTeamAndSkill(team, skill)) {
+            throw new BadRequestException(
+                    ApiMessages.REQUIRED_SKILL_ALREADY_EXISTS
+            );
+        }
+
+        TeamSkill teamSkill = TeamSkill.builder()
+                .team(team)
+                .skill(skill)
+                .build();
+
+        teamSkillRepository.save(teamSkill);
+
+        return buildTeamResponse(team);
+    }
+    @Override
+    public TeamResponse removeRequiredSkill(
+            Long teamId,
+            Long skillId
+    ) {
+
+        Team team = getTeamOrThrow(teamId);
+
+        validateLeaderOwnership(team);
+
+        Skill skill = getSkillOrThrow(skillId);
+
+        TeamSkill teamSkill = teamSkillRepository
+                .findByTeamAndSkill(team, skill)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ApiMessages.REQUIRED_SKILL_NOT_FOUND
+                        )
+                );
+
+        teamSkillRepository.delete(teamSkill);
+
+        return buildTeamResponse(team);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<SkillResponse> getRequiredSkills(Long teamId) {
+
+        Team team = getTeamOrThrow(teamId);
+
+        return teamSkillRepository.findByTeam(team)
+                .stream()
+                .map(TeamSkill::getSkill)
+                .map(skillMapper::toResponse)
+                .toList();
+    }
 //helpers
 private Team getTeamOrThrow(Long id) {
 
@@ -261,6 +350,34 @@ private Team getTeamOrThrow(Long id) {
                     ApiMessages.TEAM_FULL
             );
         }
+    }
+    private void validateRecruitmentCanBeOpened(Team team) {
+
+        validateTeamIsOpen(team);
+
+        validateTeamCapacity(team);
+    }
+    private Skill getSkillOrThrow(Long skillId) {
+
+        return skillRepository.findById(skillId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ApiMessages.INVALID_SKILL
+                        ));
+    }
+    private TeamResponse buildTeamResponse(Team team) {
+
+        TeamResponse response = teamMapper.toResponse(team);
+
+        response.setRequiredSkills(
+                teamSkillRepository.findByTeam(team)
+                        .stream()
+                        .map(TeamSkill::getSkill)
+                        .map(skillMapper::toResponse)
+                        .toList()
+        );
+
+        return response;
     }
 
 }

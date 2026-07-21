@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public final class SkillMapper {
 
-    public SkillResponse toSkillResponse(Skill skill) {
+    public SkillResponse toResponse(Skill skill) {
 
         if (skill == null) {
             return null;
@@ -31,18 +31,18 @@ public final class SkillMapper {
 
         return UserSkillResponse.builder()
                 .id(userSkill.getId())
-                .skill(toSkillResponse(userSkill.getSkill()))
+                .skill(toResponse(userSkill.getSkill()))
                 .build();
     }
 
-    public List<SkillResponse> toSkillResponseList(List<Skill> skills) {
+    public List<SkillResponse> toResponseList(List<Skill> skills) {
 
         if (skills == null) {
             return List.of();
         }
 
         return skills.stream()
-                .map(this::toSkillResponse)
+                .map(this::toResponse)
                 .toList();
     }
 
