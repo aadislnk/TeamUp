@@ -4,6 +4,7 @@ public final class ApiMessages {
 
 
 
+
     private ApiMessages() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated.");
         //we do this taaki iska object na bna sake becus it makes no sence!!
@@ -34,4 +35,8 @@ public final class ApiMessages {
 
     public static final String PROFILE_AVATAR_UPDATED = "Profile avatar updated successfully.";
     public static final String PROFILE_AVATAR_REMOVED = "Profile avatar removed successfully.";
+
+    public static final String SKILLS_FETCHED =  "Skills fetched successfully.";
+    public static final String SKILLS_ADDED =  "Skills added successfully.";
+    public static final String SKILL_REMOVED =  "Skills removed successfully.";
 }
