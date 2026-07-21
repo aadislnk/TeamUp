@@ -39,4 +39,6 @@ public final class ApiPaths {
     public static final String NOTIFICATIONS = API_BASE + "/notifications";
 
     public static final String SEARCH = "/search";
+    // Join Requests
+    public static final String REQUESTS = API_BASE + "/requests";
 }

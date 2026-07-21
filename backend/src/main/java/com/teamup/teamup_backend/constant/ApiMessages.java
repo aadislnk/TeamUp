@@ -74,4 +74,21 @@ public final class ApiMessages {
     public static final String FAILURE = "Failure";
     public static final String RECRUITMENT_STATUS_UPDATED = "Recruitment status updated successfully.";
 
+    public static final String JOIN_REQUEST_NOT_FOUND = "Join request not found.";
+    public static final String ONLY_APPLICANT_CAN_WITHDRAW = "Only the applicant can withdraw this join request.";
+    public static final String ONLY_PENDING_REQUEST_ALLOWED = "Only pending join requests can be modified.";
+    public static final String TEAM_LEADER_CANNOT_APPLY = "Team leader cannot apply to their own team.";
+    public static final String APPLICANT_ALREADY_MEMBER = "You are already a member of this team.";
+    public static final String DUPLICATE_PENDING_REQUEST = "You already have a pending request for this team.";
+    public static final String ALREADY_IN_TEAM_FOR_EVENT = "You are already a member of another team for this event.";
+
+    public static final String JOIN_REQUEST_CREATED = "Join request created successfully.";
+    public static final String JOIN_REQUEST_WITHDRAWN = "Join request withdrawn successfully.";
+    public static final String JOIN_REQUEST_APPROVED = "Join request approved successfully.";
+    public static final String JOIN_REQUEST_REJECTED = "Join request rejected successfully.";
+    public static final String JOIN_REQUEST_ACCEPTED = "Join request accepted successfully.";
+    public static final String INCOMING_JOIN_REQUESTS_FETCHED = "Incoming join requests fetched successfully.";
+    public static final String OUTGOING_JOIN_REQUESTS_FETCHED = "Outgoing join requests fetched successfully.";
+
+
 }

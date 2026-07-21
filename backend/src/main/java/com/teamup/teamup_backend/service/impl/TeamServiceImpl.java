@@ -8,6 +8,7 @@ import com.teamup.teamup_backend.dto.response.LeaderDashboardResponse;
 import com.teamup.teamup_backend.dto.response.SkillResponse;
 import com.teamup.teamup_backend.dto.response.TeamResponse;
 import com.teamup.teamup_backend.entity.*;
+import com.teamup.teamup_backend.enums.JoinRequestStatus;
 import com.teamup.teamup_backend.enums.TeamStatus;
 import com.teamup.teamup_backend.exception.BadRequestException;
 import com.teamup.teamup_backend.exception.ForbiddenException;
@@ -279,7 +280,12 @@ public class TeamServiceImpl implements TeamService {
 
         return LeaderDashboardResponse.builder()
                 .team(buildTeamResponse(team))
-                .pendingRequestsCount(0) // temporary
+                .pendingRequestsCount(
+                        (int) joinRequestRepository.countByTeamAndStatus(
+                                team,
+                                JoinRequestStatus.PENDING
+                        )
+                )
                 .acceptedMembers(team.getCurrentMembers())
                 .recruitmentOpen(team.getRecruitmentOpen())
                 .build();
