@@ -48,4 +48,15 @@ public final class ApiMessages {
     public static final String TEAMS_FETCHED = "Teams fetched successfully.";
     public static final String RECRUITMENT_UPDATED = "Recruitment status updated successfully.";
     public static final String WHATSAPP_LINK_UPDATED = "WhatsApp group link updated successfully.";
+
+    public static final String ONLY_TEAM_LEADER_ALLOWED = "Only team leader is allowed to perform this action.";
+    public static final String MAX_MEMBERS_LESS_THAN_CURRENT = "Maximum members cannot be less than the current number of team members.";
+    public static final String TEAM_ALREADY_EXISTS =  "Team already exists.";
+    public static final String TEAM_NOT_FOUND = "Team not found.";
+    public static final String EVENT_NOT_FOUND = "Event not found.";
+    public static final String ALREADY_LEADING_TEAM_FOR_EVENT = "You are already leading a team for this event.";
+    public static final String CANNOT_DELETE_TEAM_WITH_MEMBERS = "Cannot delete a team that has members. Please remove all members before deleting the team.";
+    public static final String TEAM_NOT_OPEN = "Team is not open for recruitment. You cannot join this team.";
+    public static final String RECRUITMENT_CLOSED = "Recruitment for this team is closed. You cannot join this team.";
+    public static final String TEAM_FULL = "This team has reached its maximum member capacity. You cannot join this team.";
 }

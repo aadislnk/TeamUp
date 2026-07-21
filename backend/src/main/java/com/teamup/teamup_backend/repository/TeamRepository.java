@@ -1,5 +1,6 @@
 package com.teamup.teamup_backend.repository;
 
+import com.teamup.teamup_backend.entity.Event;
 import com.teamup.teamup_backend.entity.Team;
 import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.TeamStatus;
@@ -12,9 +13,16 @@ import java.util.Optional;
 
 public interface TeamRepository extends JpaRepository<Team, Long>, JpaSpecificationExecutor<Team> {
 
-    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseAndEvent(
+            String name,
+            Event event
+    );
 
-    boolean existsByNameIgnoreCaseAndIdNot(String name, Long teamId);
+    boolean existsByNameIgnoreCaseAndEventAndIdNot(
+            String name,
+            Event event,
+            Long id
+    );
 
     Page<Team> findByLeader(User leader, Pageable pageable);
 
@@ -23,4 +31,6 @@ public interface TeamRepository extends JpaRepository<Team, Long>, JpaSpecificat
     Page<Team> findByRecruitmentOpenTrue(Pageable pageable);
 
     Optional<Team> findByIdAndLeader(Long id, User leader);
+
+    boolean existsByLeaderAndEvent(User leader, Event event);
 }
