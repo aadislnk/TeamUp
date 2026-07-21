@@ -85,16 +85,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**").permitAll()
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .requestMatchers(ApiPaths.AUTH + "/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,ApiPaths.SKILLS).permitAll()
-                        .requestMatchers(HttpMethod.GET,ApiPaths.USERS + ApiPaths.USER_ID).permitAll()
-                        .requestMatchers(HttpMethod.GET,ApiPaths.USERS + ApiPaths.USER_ID + ApiPaths.USER_SKILLS).permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPaths.SKILLS).permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.USER_ID).permitAll()
+                        .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.USER_ID + ApiPaths.USER_SKILLS).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.SEARCH).permitAll()
-                        .requestMatchers(ApiPaths.USERS + ApiPaths.CURRENT_USER, ApiPaths.USERS + ApiPaths.CURRENT_USER + "/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS).authenticated()
-                        .requestMatchers(HttpMethod.POST,ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS).authenticated()
-                        .requestMatchers(HttpMethod.DELETE, ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS + ApiPaths.SKILL_ID).authenticated()
+                        .requestMatchers(HttpMethod.GET, ApiPaths.EVENTS, ApiPaths.EVENTS + "/**").permitAll()
+                        .requestMatchers(ApiPaths.USERS + ApiPaths.CURRENT_USER,ApiPaths.USERS + ApiPaths.CURRENT_USER + "/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, ApiPaths.EVENTS).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, ApiPaths.EVENTS + "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, ApiPaths.EVENTS + "/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class );
