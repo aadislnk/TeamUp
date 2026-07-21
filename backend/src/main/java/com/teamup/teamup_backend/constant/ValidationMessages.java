@@ -31,6 +31,17 @@ public final class ValidationMessages {
 
     public static final String INVALID_AVATAR = "Please select a valid avatar.";
 
-    public static final String INVALID_WHATSAPP_NUMBER =
-            "Please enter a valid WhatsApp number.";
+    public static final String INVALID_WHATSAPP_NUMBER = "Please enter a valid WhatsApp number.";
+
+
+    public static final String TEAM_NAME_BLANK = "Team name cannot be blank.";
+    public static final String TEAM_NAME_MIN = "Team name must contain at least 3 characters.";
+    public static final String TEAM_NAME_MAX = "Team name cannot exceed 100 characters.";
+    public static final String TEAM_DESCRIPTION_MAX = "Description cannot exceed 2000 characters.";
+    public static final String MAX_MEMBERS_REQUIRED = "Maximum team members is required.";
+    public static final String MAX_MEMBERS_MIN = "Maximum team members must be at least 2.";
+    public static final String MAX_MEMBERS_MAX = "Maximum team members cannot exceed 50.";
+    public static final String RECRUITMENT_STATUS_REQUIRED = "Recruitment status is required.";
+    public static final String WHATSAPP_LINK_INVALID = "Please provide a valid WhatsApp group link.";
+    public static final String TEAM_STATUS_REQUIRED = "Team status is required.";
 }

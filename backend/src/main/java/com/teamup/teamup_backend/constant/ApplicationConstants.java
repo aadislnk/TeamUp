@@ -16,6 +16,12 @@ public final class ApplicationConstants {
     public static final String SYSTEM = "SYSTEM";
     public static final String UNKNOWN = "UNKNOWN";
 
-    public static final String WHATSAPP_NUMBER_REGEX =
-            "^\\+?[1-9]\\d{7,14}$";
+    public static final String WHATSAPP_NUMBER_REGEX = "^\\+?[1-9]\\d{7,14}$";
+
+    public static final int TEAM_NAME_MIN_LENGTH = 3;
+    public static final int TEAM_NAME_MAX_LENGTH = 100;
+    public static final int TEAM_DESCRIPTION_MAX_LENGTH = 2000;
+    public static final int TEAM_MIN_MEMBERS = 2;
+    public static final int TEAM_MAX_MEMBERS = 50;
+    public static final int TEAM_WHATSAPP_LINK_MAX_LENGTH = 255;
 }

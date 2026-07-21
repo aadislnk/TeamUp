@@ -40,4 +40,12 @@ public final class ApiMessages {
     public static final String SKILLS_ADDED =  "Skills added successfully.";
     public static final String SKILL_REMOVED =  "Skills removed successfully.";
     public static final String USERS_FETCHED = "Users fetched successfully.";
+
+    public static final String TEAM_CREATED = "Team created successfully.";
+    public static final String TEAM_UPDATED = "Team updated successfully.";
+    public static final String TEAM_DELETED = "Team deleted successfully.";
+    public static final String TEAM_FETCHED = "Team fetched successfully.";
+    public static final String TEAMS_FETCHED = "Teams fetched successfully.";
+    public static final String RECRUITMENT_UPDATED = "Recruitment status updated successfully.";
+    public static final String WHATSAPP_LINK_UPDATED = "WhatsApp group link updated successfully.";
 }
