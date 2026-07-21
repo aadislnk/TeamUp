@@ -1,21 +1,24 @@
 package com.teamup.teamup_backend.service.impl;
 
+import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.dto.response.NotificationResponse;
 import com.teamup.teamup_backend.dto.response.UnreadCountResponse;
 import com.teamup.teamup_backend.entity.Notification;
 import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.NotificationType;
+import com.teamup.teamup_backend.exception.ResourceNotFoundException;
 import com.teamup.teamup_backend.mapper.NotificationMapper;
 import com.teamup.teamup_backend.repository.NotificationRepository;
-import com.teamup.teamup_backend.repository.UserRepository;
-import com.teamup.teamup_backend.service.AuthenticationService;
 import com.teamup.teamup_backend.service.CurrentUserService;
 import com.teamup.teamup_backend.service.EmailService;
 import com.teamup.teamup_backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+
+import static com.teamup.teamup_backend.mail.EmailSubjects.TEAM_INVITATION;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void markAsRead(Long notificationId) {
+    public void markAsRead(Long notificationId) throws AccessDeniedException {
 
         User currentUser = currentUserService.getCurrentUser();
 
@@ -160,10 +163,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    /*
-     * Validation Helpers
-     */
-
+   //helpers
     private Notification getNotificationOrThrow(Long notificationId) {
 
         return notificationRepository.findById(notificationId)
@@ -177,7 +177,7 @@ public class NotificationServiceImpl implements NotificationService {
     private void validateNotificationOwnership(
             Notification notification,
             User currentUser
-    ) {
+    ) throws AccessDeniedException {
 
         if (!notification.getUser().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException(

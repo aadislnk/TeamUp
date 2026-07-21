@@ -90,5 +90,10 @@ public final class ApiMessages {
     public static final String INCOMING_JOIN_REQUESTS_FETCHED = "Incoming join requests fetched successfully.";
     public static final String OUTGOING_JOIN_REQUESTS_FETCHED = "Outgoing join requests fetched successfully.";
 
+    public static final String NOTIFICATION_NOT_FOUND = "Notification not found.";
+    public static final String GET_NOTIFICATIONS_SUCCESS = "Notifications retrieved successfully.";
+    public static final String GET_UNREAD_NOTIFICATION_COUNT_SUCCESS = "Unread notification count retrieved successfully.";
+    public static final String MARK_NOTIFICATION_READ_SUCCESS = "Notification marked as read successfully.";
+    public static final String MARK_ALL_NOTIFICATIONS_READ_SUCCESS = "All notifications marked as read successfully.";
 
 }

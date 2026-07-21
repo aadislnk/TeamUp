@@ -10,6 +10,7 @@ import com.teamup.teamup_backend.entity.Team;
 import com.teamup.teamup_backend.entity.TeamMember;
 import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.JoinRequestStatus;
+import com.teamup.teamup_backend.enums.NotificationType;
 import com.teamup.teamup_backend.exception.BadRequestException;
 import com.teamup.teamup_backend.exception.ForbiddenException;
 import com.teamup.teamup_backend.exception.ResourceNotFoundException;
@@ -19,6 +20,7 @@ import com.teamup.teamup_backend.repository.TeamMemberRepository;
 import com.teamup.teamup_backend.repository.TeamRepository;
 import com.teamup.teamup_backend.service.CurrentUserService;
 import com.teamup.teamup_backend.service.JoinRequestService;
+import com.teamup.teamup_backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     private final TeamMemberRepository teamMemberRepository;
     private final CurrentUserService currentUserService;
     private final JoinRequestMapper joinRequestMapper;
+    private final NotificationService notificationService;
 
     @Override
     public JoinRequestResponse applyToTeam(
@@ -62,6 +65,27 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
         JoinRequest savedRequest = joinRequestRepository.save(joinRequest);
 
+        notificationService.createNotification(
+                team.getLeader(),
+                "New Join Request",
+                currentUser.getFullName()
+                        + " has submitted a request to join "
+                        + team.getName()
+                        + ".",
+                NotificationType.JOIN_REQUEST_RECEIVED
+        );
+
+        notificationService.sendNotificationEmail(
+                team.getLeader(),
+                NotificationType.JOIN_REQUEST_RECEIVED,
+                team.getLeader().getFullName(),
+                currentUser.getFullName(),
+                team.getName(),
+                currentUser.getPreferredRole() == null
+                        ? "Not specified"
+                        : currentUser.getPreferredRole().toString()
+        );
+
         return joinRequestMapper.toResponse(savedRequest);
     }
 
@@ -72,7 +96,20 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         User currentUser = currentUserService.getCurrentUser();
 
         validateApplicantOwnership(joinRequest, currentUser);
+
         validatePendingRequest(joinRequest);
+
+        Team team = joinRequest.getTeam();
+
+        notificationService.createNotification(
+                team.getLeader(),
+                "Join Request Withdrawn",
+                currentUser.getFullName()
+                        + " has withdrawn the request to join "
+                        + team.getName()
+                        + ".",
+                NotificationType.JOIN_REQUEST_WITHDRAWN
+        );
 
         joinRequestRepository.delete(joinRequest);
     }
@@ -103,7 +140,25 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         teamRepository.save(team);
 
         joinRequest.setStatus(JoinRequestStatus.ACCEPTED);
+
         JoinRequest savedRequest = joinRequestRepository.save(joinRequest);
+
+        notificationService.createNotification(
+                applicant,
+                "Join Request Accepted",
+                "Your request to join "
+                        + team.getName()
+                        + " has been accepted.",
+                NotificationType.JOIN_REQUEST_ACCEPTED
+        );
+
+        notificationService.sendNotificationEmail(
+                applicant,
+                NotificationType.JOIN_REQUEST_ACCEPTED,
+                applicant.getFullName(),
+                team.getName(),
+                team.getLeader().getFullName()
+        );
 
         return joinRequestMapper.toResponse(savedRequest);
     }
@@ -118,6 +173,26 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
         joinRequest.setStatus(JoinRequestStatus.REJECTED);
         JoinRequest savedRequest = joinRequestRepository.save(joinRequest);
+
+        Team team = joinRequest.getTeam();
+        User applicant = joinRequest.getUser();
+
+        notificationService.createNotification(
+                applicant,
+                "Join Request Rejected",
+                "Your request to join "
+                        + team.getName()
+                        + " has been rejected.",
+                NotificationType.JOIN_REQUEST_REJECTED
+        );
+
+        notificationService.sendNotificationEmail(
+                applicant,
+                NotificationType.JOIN_REQUEST_REJECTED,
+                applicant.getFullName(),
+                team.getName(),
+                team.getLeader().getFullName()
+        );
 
         return joinRequestMapper.toResponse(savedRequest);
     }

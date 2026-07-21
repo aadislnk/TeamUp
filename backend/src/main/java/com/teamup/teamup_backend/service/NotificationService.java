@@ -5,6 +5,7 @@ import com.teamup.teamup_backend.dto.response.UnreadCountResponse;
 import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.NotificationType;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface NotificationService {
@@ -13,7 +14,7 @@ public interface NotificationService {
 
     UnreadCountResponse getUnreadCount();
 
-    void markAsRead(Long notificationId);
+    void markAsRead(Long notificationId) throws AccessDeniedException;
 
     void markAllAsRead();
 

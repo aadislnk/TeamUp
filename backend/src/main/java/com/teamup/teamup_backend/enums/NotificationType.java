@@ -8,5 +8,7 @@ public enum NotificationType {
 
     JOIN_REQUEST_REJECTED,
 
-    JOIN_REQUEST_WITHDRAWN
+    JOIN_REQUEST_WITHDRAWN,
+
+    TEAM_INVITATION
 }
