@@ -3,9 +3,7 @@ package com.teamup.teamup_backend.controller.team;
 import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.constant.ApiPaths;
 import com.teamup.teamup_backend.dto.common.ApiResponse;
-import com.teamup.teamup_backend.dto.request.CreateTeamRequest;
-import com.teamup.teamup_backend.dto.request.TeamSearchRequest;
-import com.teamup.teamup_backend.dto.request.UpdateTeamRequest;
+import com.teamup.teamup_backend.dto.request.*;
 import com.teamup.teamup_backend.dto.response.TeamResponse;
 import com.teamup.teamup_backend.service.TeamService;
 import jakarta.validation.Valid;
@@ -111,7 +109,7 @@ public class TeamController {
     @PatchMapping("/{teamId}/recruitment")
     public ResponseEntity<ApiResponse<TeamResponse>> updateRecruitmentStatus(
             @PathVariable Long teamId,
-            @RequestParam Boolean recruitmentOpen
+            @Valid @RequestBody UpdateRecruitmentRequest request
     ) {
 
         return ResponseEntity.ok(
@@ -119,7 +117,7 @@ public class TeamController {
                         ApiMessages.RECRUITMENT_STATUS_UPDATED,
                         teamService.updateRecruitmentStatus(
                                 teamId,
-                                recruitmentOpen
+                                request.getRecruitmentOpen()
                         )
                 )
         );
@@ -128,14 +126,17 @@ public class TeamController {
     @PatchMapping("/{teamId}/whatsapp")
     public ResponseEntity<ApiResponse<TeamResponse>> updateWhatsappGroupLink(
             @PathVariable Long teamId,
-            @RequestParam String whatsappGroupLink
+            @Valid @RequestBody UpdateWhatsAppRequest request
     ) {
 
-        // TODO:
-        // Add teamService.updateWhatsAppGroupLink(teamId, whatsappGroupLink)
-
-        throw new UnsupportedOperationException(
-                "WhatsApp group update not implemented yet."
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ApiMessages.TEAM_UPDATED,
+                        teamService.updateWhatsAppGroupLink(
+                                teamId,
+                                request.getWhatsappGroupLink()
+                        )
+                )
         );
     }
 

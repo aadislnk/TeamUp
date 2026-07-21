@@ -64,4 +64,9 @@ public interface TeamService {
             Pageable pageable
     );
 
+    TeamResponse updateWhatsAppGroupLink(
+            Long teamId,
+            String whatsappGroupLink
+    );
+
 }

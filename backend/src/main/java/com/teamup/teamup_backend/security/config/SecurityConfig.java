@@ -97,6 +97,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, ApiPaths.EVENTS).hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, ApiPaths.EVENTS + "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, ApiPaths.EVENTS + "/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, ApiPaths.TEAMS, ApiPaths.TEAMS + "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, ApiPaths.TEAMS).authenticated()
+                        .requestMatchers(HttpMethod.PUT, ApiPaths.TEAMS + "/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, ApiPaths.TEAMS + "/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, ApiPaths.TEAMS + "/**").authenticated()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class );

@@ -149,6 +149,24 @@ public class TeamServiceImpl implements TeamService {
 
         return buildTeamResponse(updatedTeam);
     }
+
+    @Override
+    public TeamResponse updateWhatsAppGroupLink(
+            Long teamId,
+            String whatsappGroupLink
+    ) {
+
+        Team team = getTeamOrThrow(teamId);
+
+        validateLeaderOwnership(team);
+
+        team.setWhatsappGroupLink(whatsappGroupLink);
+
+        Team updatedTeam = teamRepository.save(team);
+
+        return buildTeamResponse(updatedTeam);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Page<TeamResponse> getOpenTeams(Pageable pageable) {
