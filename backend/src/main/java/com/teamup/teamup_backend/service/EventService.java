@@ -22,6 +22,8 @@ public interface EventService {
 
     void deleteEvent(Long eventId);
 
+    Page<EventResponse> getMyEvents(Pageable pageable);
+
     Page<EventSummaryResponse> searchEvents(
             String keyword,
             Pageable pageable

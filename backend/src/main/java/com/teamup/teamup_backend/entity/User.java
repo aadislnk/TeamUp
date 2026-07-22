@@ -73,6 +73,9 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "leader",fetch = FetchType.LAZY)
     private List<Team> teams;
 
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private List<Event> ownedEvents;
+
     @OneToMany(mappedBy = "user",fetch =  FetchType.LAZY)
     private List<UserSkill> skills;
 

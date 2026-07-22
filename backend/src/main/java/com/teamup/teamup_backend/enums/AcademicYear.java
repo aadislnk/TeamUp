@@ -5,5 +5,5 @@ public enum AcademicYear {
     SECOND_YEAR,
     THIRD_YEAR,
     FOURTH_YEAR,
-    GRADUATED //for admins may be
+    GRADUATED
 }

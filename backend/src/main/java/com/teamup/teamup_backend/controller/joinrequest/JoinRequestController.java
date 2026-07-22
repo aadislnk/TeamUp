@@ -23,7 +23,7 @@ public class JoinRequestController {
 
     private final JoinRequestService joinRequestService;
 
-    @PostMapping(ApiPaths.TEAMS + "/{teamId}/apply")
+    @PostMapping("/teams/{teamId}/apply")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<JoinRequestResponse> applyToTeam(
             @PathVariable Long teamId,
@@ -41,7 +41,7 @@ public class JoinRequestController {
         );
     }
 
-    @DeleteMapping(ApiPaths.REQUESTS + "/{requestId}")
+    @DeleteMapping("/requests/{requestId}")
     public ApiResponse<Void> withdrawRequest(
             @PathVariable Long requestId
     ) {
@@ -54,7 +54,7 @@ public class JoinRequestController {
         );
     }
 
-    @PatchMapping(ApiPaths.REQUESTS + "/{requestId}/accept")
+    @PatchMapping("/requests/{requestId}/accept")
     public ApiResponse<JoinRequestResponse> acceptRequest(
             @PathVariable Long requestId
     ) {
@@ -68,7 +68,7 @@ public class JoinRequestController {
         );
     }
 
-    @PatchMapping(ApiPaths.REQUESTS + "/{requestId}/reject")
+    @PatchMapping("/requests/{requestId}/reject")
     public ApiResponse<JoinRequestResponse> rejectRequest(
             @PathVariable Long requestId
     ) {
@@ -82,7 +82,7 @@ public class JoinRequestController {
         );
     }
 
-    @GetMapping(ApiPaths.TEAMS + "/{teamId}/requests")
+    @GetMapping("/teams/{teamId}/requests")
     public ApiResponse<List<IncomingJoinRequestResponse>> getIncomingRequests(
             @PathVariable Long teamId
     ) {
@@ -96,7 +96,7 @@ public class JoinRequestController {
         );
     }
 
-    @GetMapping(ApiPaths.USERS + "/me/requests")
+    @GetMapping("/users/me/requests")
     public ApiResponse<List<OutgoingJoinRequestResponse>> getOutgoingRequests() {
 
         List<OutgoingJoinRequestResponse> response =

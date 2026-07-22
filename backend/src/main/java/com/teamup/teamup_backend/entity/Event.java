@@ -21,7 +21,8 @@ import java.util.List;
                 @Index(name = "idx_event_status", columnList = "status"),
                 @Index(name = "idx_event_type", columnList = "type"),
                 @Index(name = "idx_event_mode", columnList = "mode"),
-                @Index(name = "idx_event_date", columnList = "event_date")
+                @Index(name = "idx_event_date", columnList = "event_start"),
+                @Index(name = "idx_event_owner", columnList = "owner_id")
         }
 )
 public class Event extends BaseEntity {
@@ -80,6 +81,10 @@ public class Event extends BaseEntity {
 
     @Column(name = "event_end",nullable = false)
     private LocalDateTime eventEnd;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @OneToMany(mappedBy = "event",fetch = FetchType.LAZY)
     private List<Team> teams;

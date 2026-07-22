@@ -1,17 +1,22 @@
 package com.teamup.teamup_backend.service.impl;
 
+import com.teamup.teamup_backend.constant.ApiMessages;
 import com.teamup.teamup_backend.dto.request.CreateEventRequest;
 import com.teamup.teamup_backend.dto.request.UpdateEventRequest;
 import com.teamup.teamup_backend.dto.response.EventResponse;
 import com.teamup.teamup_backend.dto.response.EventSummaryResponse;
 import com.teamup.teamup_backend.entity.Event;
+import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.EventMode;
 import com.teamup.teamup_backend.enums.EventStatus;
 import com.teamup.teamup_backend.enums.EventType;
 import com.teamup.teamup_backend.exception.BadRequestException;
+import com.teamup.teamup_backend.exception.ForbiddenException;
+import com.teamup.teamup_backend.exception.ResourceAlreadyExistsException;
 import com.teamup.teamup_backend.exception.ResourceNotFoundException;
 import com.teamup.teamup_backend.mapper.EventMapper;
 import com.teamup.teamup_backend.repository.EventRepository;
+import com.teamup.teamup_backend.service.CurrentUserService;
 import com.teamup.teamup_backend.service.EventService;
 import com.teamup.teamup_backend.specification.EventSpecifications;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +35,7 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final CurrentUserService currentUserService;
 
     @Override
     @Transactional(readOnly = true)
@@ -72,7 +78,15 @@ public class EventServiceImpl implements EventService {
                 request.getStatus()
         );
 
-        Event event = eventMapper.createEntity(request);
+        if (eventRepository.existsByTitleIgnoreCase(request.getTitle())) {
+            throw new ResourceAlreadyExistsException(
+                    ApiMessages.EVENT_ALREADY_EXISTS
+            );
+        }
+
+        User currentUser = currentUserService.getCurrentUser();
+
+        Event event = eventMapper.createEntity(request, currentUser);
 
         event = eventRepository.save(event);
 
@@ -84,6 +98,8 @@ public class EventServiceImpl implements EventService {
                                      UpdateEventRequest request) {
 
         Event event = getEventOrThrow(eventId);
+
+        validateEventOwnership(event);
 
         validateDates(
                 request.getRegistrationStart(),
@@ -105,6 +121,15 @@ public class EventServiceImpl implements EventService {
                 request.getStatus()
         );
 
+        if (eventRepository.existsByTitleIgnoreCaseAndIdNot(
+                request.getTitle(),
+                eventId
+        )) {
+            throw new ResourceAlreadyExistsException(
+                    ApiMessages.EVENT_ALREADY_EXISTS
+            );
+        }
+
         eventMapper.updateEntity(event, request);
 
         event = eventRepository.save(event);
@@ -117,7 +142,29 @@ public class EventServiceImpl implements EventService {
 
         Event event = getEventOrThrow(eventId);
 
+        validateEventOwnership(event);
+
+        if (event.getTeams() != null && !event.getTeams().isEmpty()) {
+            throw new BadRequestException(
+                    ApiMessages.EVENT_HAS_TEAMS
+            );
+        }
+
         eventRepository.delete(event);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<EventResponse> getMyEvents(Pageable pageable) {
+
+        User currentUser = currentUserService.getCurrentUser();
+
+        return eventRepository
+                .findByOwner(
+                        currentUser,
+                        getSortedPageable(pageable)
+                )
+                .map(eventMapper::toResponse);
     }
 
     @Override
@@ -171,8 +218,18 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(eventId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                "Event not found with id: " + eventId
+                                ApiMessages.EVENT_NOT_FOUND
                         ));
+    }
+
+    private void validateEventOwnership(Event event) {
+
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (event.getOwner() == null
+                || !event.getOwner().getId().equals(currentUser.getId())) {
+            throw new ForbiddenException(ApiMessages.ACCESS_DENIED);
+        }
     }
 
     private void validateDates(

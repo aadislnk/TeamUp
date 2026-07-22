@@ -5,6 +5,7 @@ import com.teamup.teamup_backend.dto.request.UpdateEventRequest;
 import com.teamup.teamup_backend.dto.response.EventResponse;
 import com.teamup.teamup_backend.dto.response.EventSummaryResponse;
 import com.teamup.teamup_backend.entity.Event;
+import com.teamup.teamup_backend.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,6 +26,9 @@ public class EventMapper {
                 .eventUrl(event.getEventUrl())
                 .registrationUrl(event.getRegistrationUrl())
                 .bannerUrl(event.getBannerUrl())
+                .ownerId(getOwnerId(event))
+                .ownerName(getOwnerName(event))
+                .ownerProfileImage(getOwnerProfileImage(event))
                 .type(event.getType())
                 .mode(event.getMode())
                 .status(event.getStatus())
@@ -52,6 +56,9 @@ public class EventMapper {
                 .organizer(event.getOrganizer())
                 .location(event.getLocation())
                 .bannerUrl(event.getBannerUrl())
+                .ownerId(getOwnerId(event))
+                .ownerName(getOwnerName(event))
+                .ownerProfileImage(getOwnerProfileImage(event))
                 .type(event.getType())
                 .mode(event.getMode())
                 .status(event.getStatus())
@@ -61,7 +68,7 @@ public class EventMapper {
                 .build();
     }
 
-    public Event createEntity(CreateEventRequest request) {
+    public Event createEntity(CreateEventRequest request, User owner) {
 
         if (request == null) {
             return null;
@@ -85,6 +92,7 @@ public class EventMapper {
                 .registrationOpen(isRegistrationCurrentlyOpen(request.getRegistrationStart(), request.getRegistrationEnd()))
                 .minTeamSize(request.getMinTeamSize())
                 .maxTeamSize(request.getMaxTeamSize())
+                .owner(owner)
                 .build();
     }
 
@@ -118,5 +126,26 @@ public class EventMapper {
 
         return !now.isBefore(registrationStart)
                 && !now.isAfter(registrationEnd);
+    }
+
+    private Long getOwnerId(Event event) {
+
+        return event.getOwner() == null
+                ? null
+                : event.getOwner().getId();
+    }
+
+    private String getOwnerName(Event event) {
+
+        return event.getOwner() == null
+                ? null
+                : event.getOwner().getFullName();
+    }
+
+    private String getOwnerProfileImage(Event event) {
+
+        return event.getOwner() == null
+                ? null
+                : event.getOwner().getProfileImageUrl();
     }
 }

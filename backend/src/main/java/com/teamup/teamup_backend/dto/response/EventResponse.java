@@ -30,6 +30,12 @@ public class EventResponse {
 
     private String bannerUrl;
 
+    private Long ownerId;
+
+    private String ownerName;
+
+    private String ownerProfileImage;
+
     private EventType type;
 
     private EventMode mode;

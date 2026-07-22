@@ -1,6 +1,7 @@
 package com.teamup.teamup_backend.repository;
 
 import com.teamup.teamup_backend.entity.Event;
+import com.teamup.teamup_backend.entity.User;
 import com.teamup.teamup_backend.enums.EventMode;
 import com.teamup.teamup_backend.enums.EventStatus;
 import com.teamup.teamup_backend.enums.EventType;
@@ -41,6 +42,11 @@ public interface EventRepository extends
 
     Page<Event> findByRegistrationEndAfter(
             LocalDateTime dateTime,
+            Pageable pageable
+    );
+
+    Page<Event> findByOwner(
+            User owner,
             Pageable pageable
     );
 

@@ -9,6 +9,9 @@ import com.teamup.teamup_backend.enums.EventMode;
 import com.teamup.teamup_backend.enums.EventStatus;
 import com.teamup.teamup_backend.enums.EventType;
 import com.teamup.teamup_backend.service.EventService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,19 +21,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(ApiPaths.EVENTS)
+@Tag(name = "Event Management")
 public class EventController {
 
     private final EventService eventService;
 
     //public api endpts
-    @GetMapping
+    @GetMapping(ApiPaths.EVENTS)
+    @Operation(summary = "Get all public events")
     public Page<EventResponse> getAllEvents(Pageable pageable) {
 
         return eventService.getAllEvents(pageable);
     }
 
-    @GetMapping("/{eventId}")
+    @GetMapping(ApiPaths.EVENTS + "/{eventId}")
+    @Operation(summary = "Get event details")
     public EventResponse getEventById(
             @PathVariable Long eventId
     ) {
@@ -38,7 +43,8 @@ public class EventController {
         return eventService.getEventById(eventId);
     }
 
-    @GetMapping("/search")
+    @GetMapping(ApiPaths.EVENTS + "/search")
+    @Operation(summary = "Search and filter events")
     public Page<EventSummaryResponse> searchEvents(
 
             @RequestParam(required = false) String keyword,
@@ -67,7 +73,8 @@ public class EventController {
         );
     }
 
-    @GetMapping("/upcoming")
+    @GetMapping(ApiPaths.EVENTS + "/upcoming")
+    @Operation(summary = "Get upcoming events")
     public Page<EventSummaryResponse> getUpcomingEvents(
             Pageable pageable
     ) {
@@ -75,10 +82,13 @@ public class EventController {
         return eventService.getUpcomingEvents(pageable);
     }
 
-    //admin apis:
-
-    @PostMapping
+    @PostMapping(ApiPaths.EVENTS)
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Create event",
+            description = "Creates an event owned by the authenticated user."
+    )
+    @SecurityRequirement(name = "bearerAuth")
     public EventResponse createEvent(
             @Valid @RequestBody CreateEventRequest request
     ) {
@@ -86,19 +96,27 @@ public class EventController {
         return eventService.createEvent(request);
     }
 
-    @PutMapping("/{eventId}")
+    @PutMapping(ApiPaths.EVENTS + "/{eventId}")
+    @Operation(
+            summary = "Update own event",
+            description = "Only the authenticated event owner can update this event."
+    )
+    @SecurityRequirement(name = "bearerAuth")
     public EventResponse updateEvent(
-
             @PathVariable Long eventId,
-
             @Valid @RequestBody UpdateEventRequest request
     ) {
 
         return eventService.updateEvent(eventId, request);
     }
 
-    @DeleteMapping("/{eventId}")
+    @DeleteMapping(ApiPaths.EVENTS + "/{eventId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(
+            summary = "Delete own event",
+            description = "Only the authenticated event owner can delete this event."
+    )
+    @SecurityRequirement(name = "bearerAuth")
     public void deleteEvent(
             @PathVariable Long eventId
     ) {
@@ -106,4 +124,11 @@ public class EventController {
         eventService.deleteEvent(eventId);
     }
 
+    @GetMapping(ApiPaths.USERS + ApiPaths.CURRENT_USER + "/events")
+    @Operation(summary = "Get events owned by current user")
+    @SecurityRequirement(name = "bearerAuth")
+    public Page<EventResponse> getMyEvents(Pageable pageable) {
+
+        return eventService.getMyEvents(pageable);
+    }
 }

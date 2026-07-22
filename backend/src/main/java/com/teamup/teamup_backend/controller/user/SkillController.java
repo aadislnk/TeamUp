@@ -47,7 +47,7 @@ public class SkillController {
     }
 
     // GET /api/v1/users/me/skills
-    @GetMapping(ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS)
+    @GetMapping("/users/me/skills")
     public ResponseEntity<ApiResponse<List<UserSkillResponse>>> getMySkills() {
 
         List<UserSkillResponse> skills = skillService.getMySkills();
@@ -60,7 +60,7 @@ public class SkillController {
         );
     }
 
-    @PostMapping(ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS)
+    @PostMapping("/users/me/skills")
     public ResponseEntity<ApiResponse<List<UserSkillResponse>>> addSkills(
             @Valid @RequestBody AddSkillsRequest request) {
 
@@ -74,7 +74,7 @@ public class SkillController {
         );
     }
 
-    @DeleteMapping(ApiPaths.USERS + ApiPaths.CURRENT_USER + ApiPaths.USER_SKILLS + ApiPaths.SKILL_ID)
+    @DeleteMapping("/users/me/skills/{skillId}")
     public ResponseEntity<ApiResponse<Void>> removeSkill(
             @PathVariable Long skillId) {
 
@@ -88,7 +88,7 @@ public class SkillController {
         );
     }
 
-    @GetMapping(ApiPaths.USERS + ApiPaths.USER_ID + ApiPaths.USER_SKILLS)
+    @GetMapping("/users/{userId}/skills")
     public ResponseEntity<ApiResponse<List<UserSkillResponse>>> getUserSkills(
             @PathVariable Long userId) {
 
@@ -102,7 +102,7 @@ public class SkillController {
         );
     }
 
-    @GetMapping(ApiPaths.USERS + "/search")
+    @GetMapping("/users/search")
     public ResponseEntity<ApiResponse<Page<UserSearchResponse>>> searchUsers(
             @RequestParam List<Long> skillIds,
             Pageable pageable) {
