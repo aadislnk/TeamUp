@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+
 public final class UserMapper {
 
     private UserMapper() {
@@ -76,7 +77,7 @@ public final class UserMapper {
         }
     }
 
-    public UserSearchResponse toUserSearchResponse(User user){
+    public static UserSearchResponse toUserSearchResponse(User user){
 
         if(user == null){
             return null;
@@ -91,14 +92,14 @@ public final class UserMapper {
                 .build();
     }
 
-    public List<UserSearchResponse> toUserSearchResponseList(List<User> users){
+    public static List<UserSearchResponse> toUserSearchResponseList(List<User> users){
 
         if(users == null){
             return List.of();
         }
 
         return users.stream()
-                .map(this::toUserSearchResponse)
+                .map(UserMapper::toUserSearchResponse)
                 .toList();
     }
 

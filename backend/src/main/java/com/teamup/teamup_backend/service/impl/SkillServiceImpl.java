@@ -54,7 +54,7 @@ public class SkillServiceImpl implements SkillService {
 
         List<Skill> skills = skillRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
 
-        return skillMapper.toSkillResponseList(skills);
+        return skillMapper.toResponseList(skills);
     }
 
     @Override

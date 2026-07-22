@@ -5,6 +5,7 @@ import com.teamup.teamup_backend.mapper.UserMapper;
 import com.teamup.teamup_backend.repository.SkillRepository;
 import com.teamup.teamup_backend.repository.UserRepository;
 import com.teamup.teamup_backend.service.SkillSearchService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,21 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SkillSearchServiceImpl implements SkillSearchService {
 
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
-    private final UserMapper userMapper;
-
-    public SkillSearchServiceImpl(
-            UserRepository userRepository,
-            SkillRepository skillRepository,
-            UserMapper userMapper
-    ) {
-        this.userRepository = userRepository;
-        this.skillRepository = skillRepository;
-        this.userMapper = userMapper;
-    }
 
     @Override
     public Page<UserSearchResponse> findUsersBySkill(
@@ -34,13 +25,13 @@ public class SkillSearchServiceImpl implements SkillSearchService {
             Pageable pageable
     ) {
 
-        if(skillId == null || !skillRepository.existsById(skillId)){
+        if (skillId == null || !skillRepository.existsById(skillId)) {
             return Page.empty(pageable);
         }
 
         return userRepository
-                .findDistinctUsersBySkillId(skillId,pageable)
-                .map(userMapper::toUserSearchResponse);
+                .findDistinctUsersBySkillId(skillId, pageable)
+                .map(UserMapper::toUserSearchResponse);
     }
 
     @Override
@@ -49,8 +40,8 @@ public class SkillSearchServiceImpl implements SkillSearchService {
             Pageable pageable
     ) {
 
-        if(skillIds == null || skillIds.isEmpty()){
-            return Page.empty();
+        if (skillIds == null || skillIds.isEmpty()) {
+            return Page.empty(pageable);
         }
 
         List<Long> validSkillIds = skillIds.stream()
@@ -58,12 +49,12 @@ public class SkillSearchServiceImpl implements SkillSearchService {
                 .distinct()
                 .toList();
 
-        if(validSkillIds.isEmpty()){
+        if (validSkillIds.isEmpty()) {
             return Page.empty(pageable);
         }
 
         return userRepository
-                .findDistinctUsersBySkillIds(validSkillIds,pageable)
-                .map(userMapper::toUserSearchResponse);
+                .findDistinctUsersBySkillIds(validSkillIds, pageable)
+                .map(UserMapper::toUserSearchResponse);
     }
 }
