@@ -68,11 +68,18 @@ public class Event extends BaseEntity {
     @Column(nullable = false, length = 30)
     private EventType type;
 
-    @Column(name = "registration_deadline",nullable = false)
-    private LocalDateTime registrationDeadline;
 
-    @Column(name = "event_date",nullable = false)
-    private LocalDateTime eventDate;
+    @Column(name = "registration_start",nullable = false)
+    private LocalDateTime registrationStart;
+
+    @Column(name = "registration_end",nullable = false)
+    private LocalDateTime registrationEnd;
+
+    @Column(name = "event_start",nullable = false)
+    private LocalDateTime eventStart;
+
+    @Column(name = "event_end",nullable = false)
+    private LocalDateTime eventEnd;
 
     @OneToMany(mappedBy = "event",fetch = FetchType.LAZY)
     private List<Team> teams;

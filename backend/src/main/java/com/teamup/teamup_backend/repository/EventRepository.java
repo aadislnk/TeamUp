@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.time.LocalDateTime;
-
 public interface EventRepository extends
         JpaRepository<Event, Long>,
         JpaSpecificationExecutor<Event> {
@@ -19,6 +18,7 @@ public interface EventRepository extends
             String title,
             Pageable pageable
     );
+
     Page<Event> findByType(
             EventType type,
             Pageable pageable
@@ -34,12 +34,22 @@ public interface EventRepository extends
             Pageable pageable
     );
 
-    Page<Event> findByEventDateAfter(
+    Page<Event> findByEventStartAfter(
             LocalDateTime dateTime,
             Pageable pageable
     );
 
-    Page<Event> findByRegistrationOpenTrue(
+    Page<Event> findByRegistrationEndAfter(
+            LocalDateTime dateTime,
             Pageable pageable
+    );
+
+    boolean existsByTitle(String title);
+
+    boolean existsByTitleIgnoreCase(String title);
+
+    boolean existsByTitleIgnoreCaseAndIdNot(
+            String title,
+            Long id
     );
 }

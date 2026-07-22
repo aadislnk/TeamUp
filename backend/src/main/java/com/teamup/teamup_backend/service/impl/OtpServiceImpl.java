@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +72,11 @@ public class OtpServiceImpl implements OtpService {
                         TokenStatus.ACTIVE
                 )
                 .orElseThrow(() -> new OtpNotFoundException("OTP not found"));
+
+        if (isExpired(token)) {
+            markExpired(token);
+            throw new OtpExpiredException("OTP has expired");
+        }
 
         if (!token.getOtp().equals(otp)) {
 

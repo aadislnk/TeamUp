@@ -15,6 +15,8 @@ public final class ApiPaths {
     // Users
     public static final String USERS = API_BASE + "/users";
 
+    public static final String ADMIN = API_BASE + "/admin";
+
     public static final String CURRENT_USER = "/me";
 
     public static final String USER_ID = "/{userId}";

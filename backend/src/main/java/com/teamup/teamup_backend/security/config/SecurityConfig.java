@@ -88,6 +88,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers(ApiPaths.AUTH + "/**").permitAll()
+                        .requestMatchers(ApiPaths.ADMIN, ApiPaths.ADMIN + "/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, ApiPaths.SKILLS).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.USER_ID).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.USERS + ApiPaths.USER_ID + ApiPaths.USER_SKILLS).permitAll()

@@ -67,7 +67,7 @@ public class EventSpecifications {
     public static Specification<Event> upcoming() {
 
         return (root, query, cb) -> cb.greaterThanOrEqualTo(
-                root.get("eventDate"),
+                root.get("eventStart"),
                 LocalDateTime.now()
         );
     }

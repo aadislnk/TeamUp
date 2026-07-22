@@ -36,9 +36,13 @@ public class EventResponse {
 
     private EventStatus status;
 
-    private LocalDateTime registrationDeadline;
+    private LocalDateTime registrationStart;
 
-    private LocalDateTime eventDate;
+    private LocalDateTime registrationEnd;
+
+    private LocalDateTime eventStart;
+
+    private LocalDateTime eventEnd;
 
     private Boolean registrationOpen;
 

@@ -28,8 +28,10 @@ public class EventMapper {
                 .type(event.getType())
                 .mode(event.getMode())
                 .status(event.getStatus())
-                .registrationDeadline(event.getRegistrationDeadline())
-                .eventDate(event.getEventDate())
+                .registrationStart(event.getRegistrationStart())
+                .registrationEnd(event.getRegistrationEnd())
+                .eventStart(event.getEventStart())
+                .eventEnd(event.getEventEnd())
                 .registrationOpen(event.getRegistrationOpen())
                 .minTeamSize(event.getMinTeamSize())
                 .maxTeamSize(event.getMaxTeamSize())
@@ -53,7 +55,8 @@ public class EventMapper {
                 .type(event.getType())
                 .mode(event.getMode())
                 .status(event.getStatus())
-                .eventDate(event.getEventDate())
+                .eventStart(event.getEventStart())
+                .eventEnd(event.getEventEnd())
                 .registrationOpen(event.getRegistrationOpen())
                 .build();
     }
@@ -75,9 +78,11 @@ public class EventMapper {
                 .type(request.getType())
                 .mode(request.getMode())
                 .status(request.getStatus())
-                .registrationDeadline(request.getRegistrationDeadline())
-                .eventDate(request.getEventDate())
-                .registrationOpen(request.getRegistrationOpen())
+                .registrationStart(request.getRegistrationStart())
+                .registrationEnd(request.getRegistrationEnd())
+                .eventStart(request.getEventStart())
+                .eventEnd(request.getEventEnd())
+                .registrationOpen(isRegistrationCurrentlyOpen(request.getRegistrationStart(), request.getRegistrationEnd()))
                 .minTeamSize(request.getMinTeamSize())
                 .maxTeamSize(request.getMaxTeamSize())
                 .build();
@@ -95,10 +100,23 @@ public class EventMapper {
         event.setType(request.getType());
         event.setMode(request.getMode());
         event.setStatus(request.getStatus());
-        event.setRegistrationDeadline(request.getRegistrationDeadline());
-        event.setEventDate(request.getEventDate());
-        event.setRegistrationOpen(request.getRegistrationOpen());
+        event.setRegistrationStart(request.getRegistrationStart());
+        event.setRegistrationEnd(request.getRegistrationEnd());
+        event.setEventStart(request.getEventStart());
+        event.setEventEnd(request.getEventEnd());
+        event.setRegistrationOpen(isRegistrationCurrentlyOpen(request.getRegistrationStart(), request.getRegistrationEnd()));
         event.setMinTeamSize(request.getMinTeamSize());
         event.setMaxTeamSize(request.getMaxTeamSize());
+    }
+
+    private boolean isRegistrationCurrentlyOpen(
+            java.time.LocalDateTime registrationStart,
+            java.time.LocalDateTime registrationEnd
+    ) {
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+        return !now.isBefore(registrationStart)
+                && !now.isAfter(registrationEnd);
     }
 }

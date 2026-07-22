@@ -12,27 +12,43 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventSummaryResponse {
+public class AdminEventResponse {
 
     private Long id;
 
     private String title;
 
+    private String description;
+
     private String organizer;
 
     private String location;
 
-    private String bannerUrl;
+    private String eventUrl;
 
-    private EventType type;
+    private String registrationUrl;
+
+    private String bannerUrl;
 
     private EventMode mode;
 
     private EventStatus status;
 
+    private EventType type;
+
+    private Integer minTeamSize;
+
+    private Integer maxTeamSize;
+
+    private LocalDateTime registrationStart;
+
+    private LocalDateTime registrationEnd;
+
     private LocalDateTime eventStart;
 
     private LocalDateTime eventEnd;
 
-    private Boolean registrationOpen;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

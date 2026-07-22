@@ -44,4 +44,56 @@ public final class ValidationMessages {
     public static final String RECRUITMENT_STATUS_REQUIRED = "Recruitment status is required.";
     public static final String WHATSAPP_LINK_INVALID = "Please provide a valid WhatsApp group link.";
     public static final String TEAM_STATUS_REQUIRED = "Team status is required.";
+
+
+    public static final String EVENT_TITLE_BLANK =
+            "Event title cannot be blank.";
+
+    public static final String EVENT_TITLE_MAX_LENGTH =
+            "Event title cannot exceed 255 characters.";
+
+    public static final String EVENT_DESCRIPTION_MAX_LENGTH =
+            "Event description cannot exceed 5000 characters.";
+
+    public static final String EVENT_LOCATION_MAX_LENGTH =
+            "Event location cannot exceed 255 characters.";
+
+    public static final String EVENT_ORGANIZER_REQUIRED =
+            "Organizer is required.";
+
+    public static final String EVENT_ORGANIZER_MAX_LENGTH =
+            "Organizer cannot exceed 255 characters.";
+
+    public static final String EVENT_MIN_TEAM_SIZE_REQUIRED =
+            "Minimum team size is required.";
+
+    public static final String EVENT_MAX_TEAM_SIZE_REQUIRED =
+            "Maximum team size is required.";
+
+    public static final String EVENT_MIN_TEAM_SIZE_INVALID =
+            "Minimum team size must be at least 1.";
+
+    public static final String EVENT_MAX_TEAM_SIZE_INVALID =
+            "Maximum team size must be greater than or equal to minimum team size.";
+
+    public static final String EVENT_MODE_REQUIRED =
+            "Event mode is required.";
+
+    public static final String EVENT_TYPE_REQUIRED =
+            "Event type is required.";
+
+    public static final String EVENT_STATUS_REQUIRED =
+            "Event status is required.";
+
+    public static final String REGISTRATION_START_REQUIRED =
+            "Registration start date is required.";
+
+    public static final String REGISTRATION_END_REQUIRED =
+            "Registration end date is required.";
+
+    public static final String EVENT_START_REQUIRED =
+            "Event start date is required.";
+
+    public static final String EVENT_END_REQUIRED =
+            "Event end date is required.";
 }

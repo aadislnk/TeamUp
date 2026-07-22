@@ -53,8 +53,10 @@ public class EventServiceImpl implements EventService {
     public EventResponse createEvent(CreateEventRequest request) {
 
         validateDates(
-                request.getRegistrationDeadline(),
-                request.getEventDate()
+                request.getRegistrationStart(),
+                request.getRegistrationEnd(),
+                request.getEventStart(),
+                request.getEventEnd()
         );
 
         validateTeamCapacity(
@@ -63,7 +65,10 @@ public class EventServiceImpl implements EventService {
         );
 
         validateStatus(
-                request.getRegistrationOpen(),
+                isRegistrationCurrentlyOpen(
+                        request.getRegistrationStart(),
+                        request.getRegistrationEnd()
+                ),
                 request.getStatus()
         );
 
@@ -81,8 +86,10 @@ public class EventServiceImpl implements EventService {
         Event event = getEventOrThrow(eventId);
 
         validateDates(
-                request.getRegistrationDeadline(),
-                request.getEventDate()
+                request.getRegistrationStart(),
+                request.getRegistrationEnd(),
+                request.getEventStart(),
+                request.getEventEnd()
         );
 
         validateTeamCapacity(
@@ -91,7 +98,10 @@ public class EventServiceImpl implements EventService {
         );
 
         validateStatus(
-                request.getRegistrationOpen(),
+                isRegistrationCurrentlyOpen(
+                        request.getRegistrationStart(),
+                        request.getRegistrationEnd()
+                ),
                 request.getStatus()
         );
 
@@ -166,14 +176,30 @@ public class EventServiceImpl implements EventService {
     }
 
     private void validateDates(
-            java.time.LocalDateTime registrationDeadline,
-            java.time.LocalDateTime eventDate
+            java.time.LocalDateTime registrationStart,
+            java.time.LocalDateTime registrationEnd,
+            java.time.LocalDateTime eventStart,
+            java.time.LocalDateTime eventEnd
     ) {
 
-        if (registrationDeadline.isAfter(eventDate)) {
+        if (!registrationStart.isBefore(registrationEnd)) {
 
             throw new BadRequestException(
-                    "Registration deadline cannot be after event date."
+                    "Registration start must be before registration end."
+            );
+        }
+
+        if (!eventStart.isBefore(eventEnd)) {
+
+            throw new BadRequestException(
+                    "Event start must be before event end."
+            );
+        }
+
+        if (registrationEnd.isAfter(eventStart)) {
+
+            throw new BadRequestException(
+                    "Registration end cannot be after event start."
             );
         }
     }
@@ -210,8 +236,19 @@ public class EventServiceImpl implements EventService {
         return PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                Sort.by("eventDate").ascending()
+                Sort.by("eventStart").ascending()
         );
+    }
+
+    private boolean isRegistrationCurrentlyOpen(
+            java.time.LocalDateTime registrationStart,
+            java.time.LocalDateTime registrationEnd
+    ) {
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+        return !now.isBefore(registrationStart)
+                && !now.isAfter(registrationEnd);
     }
 
 }

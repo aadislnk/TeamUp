@@ -109,6 +109,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleOtpExpiredException(
+            OtpExpiredException ex,
+            HttpServletRequest request) {
+
+        return buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                null,
+                request
+        );
+    }
+
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

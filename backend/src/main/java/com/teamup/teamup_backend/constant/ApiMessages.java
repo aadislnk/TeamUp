@@ -96,4 +96,25 @@ public final class ApiMessages {
     public static final String MARK_NOTIFICATION_READ_SUCCESS = "Notification marked as read successfully.";
     public static final String MARK_ALL_NOTIFICATIONS_READ_SUCCESS = "All notifications marked as read successfully.";
 
+    public static final String EVENT_CREATED_SUCCESS =
+            "Event created successfully.";
+
+    public static final String EVENT_UPDATED_SUCCESS =
+            "Event updated successfully.";
+
+    public static final String EVENT_DELETED_SUCCESS =
+            "Event deleted successfully.";
+
+    public static final String EVENT_FETCHED_SUCCESS =
+            "Event retrieved successfully.";
+
+    public static final String EVENTS_FETCHED_SUCCESS =
+            "Events retrieved successfully.";
+
+    public static final String EVENT_ALREADY_EXISTS = "Event with the same title already exists.";
+    public static final String EVENT_HAS_TEAMS = "Cannot delete event as it has associated teams.";
+    public static final String INVALID_TEAM_SIZE = "Minimum team size cannot be greater than maximum team size.";
+    public static final String INVALID_REGISTRATION_DATES = "Registration start date cannot be after registration end date.";
+    public static final String INVALID_EVENT_DATES = "Event start date cannot be after event end date.";
+    public static final String REGISTRATION_MUST_END_BEFORE_EVENT = "Registration end date must be before event start date.";
 }
