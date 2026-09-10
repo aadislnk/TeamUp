@@ -1,4 +1,30 @@
-import type { AcademicYear, Gender } from './user';
+import type { AcademicYear, Gender, MyProfileResponse } from './user';
+
+/**
+ * Authentication state machine status.
+ */
+export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
+
+/**
+ * Interface for the centralized authentication context.
+ */
+export interface AuthContextValue {
+  /** Authenticated user profile, or null when unauthenticated / loading */
+  user: MyProfileResponse | null;
+  /** Discriminated authentication lifecycle state */
+  status: AuthStatus;
+  /** True when authentication is resolving initial session */
+  isLoading: boolean;
+  /** True when a valid user session is active */
+  isAuthenticated: boolean;
+  /** True when no active session exists */
+  isUnauthenticated: boolean;
+  /** Set session token and load profile */
+  login: (accessToken: string) => Promise<void>;
+  /** Clear session token and invalidate auth state */
+  logout: () => void;
+}
+
 
 /**
  * System authorization role.
